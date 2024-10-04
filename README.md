@@ -10,5 +10,5 @@
 
 上线网址buttonwood.cn
 
-![][intro.gif](https://github.com/Caiooooo/buttonwood.cn/blob/master/intro.gif)
+![intro.gif](https://github.com/Caiooooo/buttonwood.cn/blob/master/intro.gif)
 
