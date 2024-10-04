@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寻感 - 寻找无穷创作灵感</title>
+    <link rel="shortcut icon" href="img/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/font.css">
+    <script src="js/reg.js"></script>
+</head>
+<body onload="loaduser()" id="home">
+    <div class="container">
+        <!-- 在页面中加入一个容器 -->
+        <div class="left-box" id="left-box"></div>
+
+        <script>
+            // 使用 JavaScript 动态加载 left-box.html
+            fetch('leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+
+                    document.getElementById('left-box').innerHTML = data;
+                    const items = document.querySelectorAll('.item');
+                    items[5].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+        </script>
+
+
+        <div class="right-box" style="font-family:myfont;overflow-y: scroll;background-color: rgba(248, 248, 255, 0.95);">
+            <div id="aboutusmain" style="font-family: myfont;margin-top: 50px;width: 70%;">
+                网页作者：Buttonwood
+                <br><br>
+                <img src="img/IMG_1418(20220220-144042).JPG" width="20%">
+                <div id="aboutuslist">
+
+                </div>   
+                <div class="reason" style="height: 200px;">
+                    <h1>
+                        关于这个网站的诞生
+                    </h1>
+<!--                    <p style="text-decoration: line-through;">-->
+<!--                            包含一切-->
+<!--                    </p>-->
+                    <p>
+                        对于设计网站，作者在进行一些设计的时候，发现想做的东西要么是有
+                        想做的东西但是不能很好的呈现，要么是素材过于稀少，观周围
+                        朋友们，发现都有如此的问题，那么我就想，我把解决这个问题
+                        做成一个网站，不就解决了很多人的需求，于是这个集各种神奇
+                        灵感网站于一身的网站就诞生了，就在左侧设计网站里面！
+                        对于足迹地图部分，特别感谢我的朋友lst，在他的启发下，我开发了这个网站并维护下去。
+                    </p>
+                </div>
+                <div class="reason" >
+                    <h1>
+                        作者联系方式？
+                    </h1>
+                    <p>
+                        wx:BUTT0NW00D (注意是零不是字母O)<br>
+                        ph:13509663771 <br>
+                        mail:buttonwood233@gamil.com <br>
+                        qq:1332192071 <br>v
+                        欢迎骚扰
+                        <br><br><br><br><br><br><br>
+                    </p>
+                </div>
+
+                        
+            </div>
+            <div class="handler">
+                
+            </div>
+        </div>
+    </div>
+    <script src="js/reg.js"></script>
+</body>
+</html>

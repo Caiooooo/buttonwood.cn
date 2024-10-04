@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册 - 寻声 | 打破第四面墙</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="shortcut icon" href="img/logo.png">
+
+</head>
+<body class = "log" >
+    <table align="center" cellpadding="5px">
+        <tr>
+            <td align="left" colspan="2">
+                <img src="img/logo.png" id="logo" alt="">
+                <span id="logoFont">
+                    寻声
+                </span> 
+            </td>
+        </tr>
+        <tr>
+            <td align="center" colspan="2" style="font-family: myfont;">在寻声，打破第四面墙</td>
+        </tr>
+        <tr>
+            <td align="right">用户名：</td>
+            <td><input type="text" id="username" autocomplete="off" placeholder="请输入用户名"></td>
+        </tr>
+        <tr>
+            <td align="right">密&nbsp;码：</td>
+            <td><input type="password" id="password" autocomplete="off" placeholder="请输入密码:">&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="right">&nbsp;确认密码：</td>
+            <td><input type="password" id="repassword" autocomplete="off" placeholder="请确认密码:"></td>
+        </tr>
+        <tr>
+            <td align="center" colspan="2"   >
+                <input  id="reg" type="button" value="注册" id="login" onclick="reg()">&nbsp;
+
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size: 14px;" align="center" colspan="2">
+                已有账号?
+                <a href="log.html" style="font-size:14px; color:rgb(33, 138, 236);">登录</a>
+            </td>
+        </tr>
+            <tr></tr>
+    </table>
+
+    <script>
+        var input = document.getElementById("repassword");
+        input.addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode.valueOf() === 13) {
+                document.getElementById("reg").click();
+            }
+        });
+    </script>
+    <script src="js/socket.io.js"></script>
+    <script src="js/reg.js">
+    </script>
+</body>
+</html>

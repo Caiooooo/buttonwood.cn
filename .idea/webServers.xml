@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="5b54b3d9-af8b-4a24-9515-7c856d9d4a2e" name="buttonwood">
+        <fileTransfer accessType="SFTP" host="110.41.55.214" port="22" sshConfigId="7a1a18dc-6e49-4724-86ff-13617d114ed0" sshConfig="root@110.41.55.214:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

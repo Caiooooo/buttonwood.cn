@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寻感 - 寻找无穷创作灵感</title>
+    <link rel="shortcut icon" href="img/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/font.css">
+    <link rel="stylesheet" href="css/github-markdown-light.min.css">
+    <link rel="stylesheet" href="css/codestyle.css">
+
+
+    <script src="js/highlight.min.js"></script>
+    <script src="js/reg.js"></script>
+    <script src="js/marked.min.js"></script>
+
+</head>
+<body onload="loaduser();" id="home">
+    <div class="container">
+
+        <div class="left-box" id="left-box"></div>
+        <script>
+            // 使用 JavaScript 动态加载 left-box.html
+            fetch('leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('left-box').innerHTML = data;
+                    const items = document.querySelectorAll('.item');
+                    items[4].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+
+        </script>
+        <div class="right-box">
+            <div class="handler">  </div>
+            <div class="bg"></div>
+            <div class="addbox">  </div>
+            <div class="right-top">
+                <i class="icon-create"></i>
+                <span>个人博客</span>
+                <span>寻感论剑证道</span>
+                <p><br></p>
+            </div>
+            <div class="cardList" >
+
+            </div>
+            <textarea id="$t" style="display:none;">
+                *Blog* not **Found** here.
+            </textarea>
+            <div id="$m" class="markdown-body" style="text-align: left;margin:2%"></div>
+
+
+            <!--                <textarea id="$t" style="display:none">-->
+
+
+
+
+        </div>
+    </div>
+
+    <script src="js/reg.js"></script>
+    <script src="js/blog.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

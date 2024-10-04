@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>寻声 - 打破第四面墙</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/font.css">
+</head>
+<body onload="loaduser()" id="home">
+    <div class="container">
+
+<!--        侧边栏目    -->
+        <!-- 在页面中加入一个容器 -->
+        <div class="left-box" id="left-box"></div>
+        <script>
+            // 使用 JavaScript 动态加载 left-box.html
+            fetch('leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+
+                    document.getElementById('left-box').innerHTML = data;
+                    const items = document.querySelectorAll('.item');
+                    items[0].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+        </script>
+
+
+        <div class="right-box" style="background:none;overflow-y: hidden;">
+            <div id="container">
+                <video id="background_video" loop muted></video>
+                <div id="video_cover"></div>
+                <div id="overlay"></div>
+            
+                <section id="main_content">
+                    <div id="head">
+                        <h1 style="font-family: fa;font-size: 300%;font-weight: 300;">
+                            <img src="img/whitelogo.png" style="width: 100px; margin-bottom: -30px;">
+                            寻声</h1>
+                        <p class="sub_head">buttonwood的博客</p>
+                        <p class="info">这是我的个人博客，用于展示一些文章和搭建开发环境，欢迎参观使用</p>
+                    </div>
+            
+                    <div id="links">
+                        <a href="designIdea.html">开始探索</a>
+                        <a href="aboutUs.html">了解我们</a>
+                    </div>
+                </section>
+            </div>
+            <div class="handler"> </div>
+        </div>
+    </div>
+
+    <script src="js/reg.js"></script>
+    <script src="js/bideo.js"></script>
+</body>
+</html>

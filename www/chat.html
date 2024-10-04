@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div align="center">
+    <h1 id="welcome">欢迎来到聊天大厅</h1>
+
+    <table>
+        <tr> <td>
+             <textarea disabled="true" rows="20" id="msglist" style="width:98%"></textarea>
+        </td></tr>
+        <tr> <td>
+            <input id="msg">
+            <button id="btnSend">发送</button>
+        </td></tr>
+        <tr> <td align="center">
+            <button id="gotoVideoRoom" style="width: 40%;">视频聊天室</button>
+        </td></tr>
+        <tr> <td align="center">
+            <button id="leave" style="width: 40%;">离开</button>
+        </td></tr>
+    </table>
+</div>
+
+    <script src="js/socket.io.js"></script>
+    <script src="js/chat.js"></script>
+</body>
+</html>

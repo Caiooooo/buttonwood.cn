@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寻感 - 寻找无穷创作灵感</title>
+    <link rel="shortcut icon" href="img/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/font.css">
+</head>
+<body onload="loaduser()" id="home">
+    <div class="container">
+        <!-- 在页面中加入一个容器 -->
+        <div class="left-box" id="left-box"></div>
+        <script>
+            // 使用 JavaScript 动态加载 left-box.html
+            fetch('leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+
+                    document.getElementById('left-box').innerHTML = data;
+                    const items = document.querySelectorAll('.item');
+                    items[2].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+        </script>
+
+
+        <div class="right-box">
+            <div class="right-top">
+                <i class="icon-art"></i>
+                <span>个人项目</span>
+                <span>欢迎积极学习交流</span>
+                <p><br></p>
+            </div>
+            <div class="cardList" >
+                <a href="index.html"  class="card-default">
+                <div class="card">
+                        <div>
+                            <div class="bg-img round card-icon" style="background-image:url(img/icon/webicon/wechat.jpg);width:32px;height:32px;" data-v-31f669e0></div><!---->
+                            <div class="card-main">
+                                <div class="card-name">音视频通话<!----></div>
+                                <div style="width:100%;"><div class="card-des">包含聊天大厅和音视频通话功能</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="http://buttonwood.cn:8887"  class="card-default">
+                    <div class="card">
+                        <div>
+                            <div class="bg-img round card-icon" style="background-image:url(img/logoC+.png);width:32px;height:32px;" data-v-31f669e0></div><!---->
+                            <div class="card-main">
+                                <div class="card-name">超智视图<!----></div>
+                                <div style="width:100%;"><div class="card-des">基于YOLOv5的乳腺早筛系统</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <a href="http://buttonwood.cn/jupyter" target="_blank" class="card-default">
+                <div class="card">
+                        <div>
+                            <div class="bg-img round card-icon" style="background-image:url(img/icon/webicon/jupyter.jpg);width:32px;height:32px;" data-v-31f669e0></div><!---->
+                            <div class="card-main">
+                                <div class="card-name">jupyter lab<!----></div>
+                                <div style="width:100%;"><div class="card-des">个人python开发环境</div></div></div>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+            <div class="handler"> </div>
+        </div>
+
+
+    </div>
+    <script src="js/reg.js"></script>
+</body>
+</html>

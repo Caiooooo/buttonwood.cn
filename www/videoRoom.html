@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div align="center">
+        <table >
+            <tr>
+                <td align="center" colspan="2" >
+                    <h1 id="vwelcome">欢迎来到1v1视频聊天室</h1>
+                </td>
+            </tr>
+            <tr><td colspan="2" align="center">
+                <input id="room" placeholder="请输入房间名称">
+                <button id="enterRoom">进入房间</button>
+                <button id="leaveRoom">离开房间</button>
+            </td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr >
+                <td align="center"><label>本地视频</label></td>
+                <td align="center"><label>远端视频</label></td>
+            </tr>
+            <tr>
+                <td> <video id="localVideo" autoplay playsinline></video></td>
+                <td> <video id="remoteVideo" autoplay playsinline></video></td>
+            </tr>
+        </table>
+    </div>
+
+    <script src="js/socket.io.js"></script>
+    <script src="js/videoRoom.js"></script>
+</body>
+</html>
