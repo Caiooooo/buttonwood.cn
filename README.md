@@ -10,4 +10,4 @@
 
 上线网址buttonwood.cn
 
-<video src="intro.mp4">
+![](intro.gif)
