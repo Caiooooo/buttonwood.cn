@@ -7,4 +7,5 @@ var data=[
     {value:"20240721", name:"天津"},
     {value:"20240219", name:"江西"},
     {value:"20120119", name:"香港"},
+    {value:"20251006", name:"四川"},
 ];
