@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>登录 - 寻声 | 打破第四面墙</title>
@@ -8,34 +9,58 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="shortcut icon" href="../img/logo.png">
     <meta name="google-adsense-account" content="ca-pub-9340624494211701">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701"
+        crossorigin="anonymous"></script>
 </head>
+
 <body class="log" style="font-weight: 500;">
-    
+
     <table align="center" cellpadding="5px">
         <tr>
             <td align="left" colspan="2">
                 <img src="../img/logo.png" id="logo" alt="">
                 <span id="logoFont">
                     寻声
-                </span> 
+                </span>
             </td>
         </tr>
         <tr>
             <td align="center" colspan="2" style="font-family: myfont;">在寻声，打破第四面墙</td>
         </tr>
         <tr>
+            <td align="right">&nbsp;&nbsp;&nbsp;登录方式：</td>
+            <td>
+                <select id="loginMode" onchange="toggleLoginMode()"
+                    style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <option value="manual">手动输入</option>
+                    <option value="available" selected>选择可用用户</option>
+                </select>
+            </td>
+        </tr>
+        <tr id="availableUserRow">
+            <td align="right">&nbsp;&nbsp;&nbsp;可用用户：</td>
+            <td>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <select id="availableUser" onchange="selectAvailableUser()"
+                        style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                        <option value="">请选择用户</option>
+                    </select>
+                    <div id="userAvatars" style="display: flex; gap: 10px;"></div>
+                </div>
+            </td>
+        </tr>
+        <tr id="usernameRow">
             <td align="right">&nbsp;&nbsp;&nbsp;用户名：</td>
             <td><input type="text" id="username" autocomplete="off" placeholder="请输入用户名">&nbsp;</td>
         </tr>
-        <tr>
+        <tr id="passwordRow">
             <td align="right">密&nbsp;码：</td>
             <td><input type="password" id="password" autocomplete="off" placeholder="请输入密码"></td>
         </tr>
         <tr>
-            
+
             <td align="center" colspan="2">
-                <input  id="reg" type="button" value="登录 " id="login" onclick="login()">&nbsp;
+                <input id="reg" type="button" value="登录 " id="login" onclick="login()">&nbsp;
 
             </td>
         </tr>
@@ -49,13 +74,166 @@
 
     <script>
         var input = document.getElementById("password");
-        input.addEventListener("keyup", function(event) {
+        input.addEventListener("keyup", function (event) {
             event.preventDefault();
             if (event.keyCode.valueOf() === 13)
                 document.getElementById("reg").click();
         });
+
+        // 加载可用用户列表
+        async function loadAvailableUsers() {
+            try {
+                const response = await fetch('avaliavle.json');
+                const users = await response.json();
+                const select = document.getElementById('availableUser');
+                const avatarsContainer = document.getElementById('userAvatars');
+
+                // 清空现有选项和头像
+                select.innerHTML = '<option value="">请选择用户</option>';
+                avatarsContainer.innerHTML = '';
+
+                // 添加用户选项和头像
+                users.forEach(user => {
+                    // 添加下拉选项
+                    const option = document.createElement('option');
+                    option.value = user;
+                    option.textContent = user;
+                    select.appendChild(option);
+
+                    // 添加头像
+                    const avatarImg = document.createElement('img');
+                    avatarImg.src = `../img/userAvatar/${user}.jpg`;
+                    avatarImg.alt = user;
+                    avatarImg.style.width = '40px';
+                    avatarImg.style.height = '40px';
+                    avatarImg.style.borderRadius = '50%';
+                    avatarImg.style.cursor = 'pointer';
+                    avatarImg.style.border = '2px solid transparent';
+                    avatarImg.style.transition = 'all 0.3s';
+                    avatarImg.title = `点击选择 ${user}`;
+
+                    // 点击头像选择用户
+                    avatarImg.addEventListener('click', function () {
+                        select.value = user;
+                        selectAvailableUser();
+                    });
+
+                    // 鼠标悬停效果
+                    avatarImg.addEventListener('mouseenter', function () {
+                        this.style.border = '2px solid rgb(120, 189, 253)';
+                        this.style.transform = 'scale(1.1)';
+                    });
+                    avatarImg.addEventListener('mouseleave', function () {
+                        if (select.value !== user) {
+                            this.style.border = '2px solid transparent';
+                            this.style.transform = 'scale(1)';
+                        }
+                    });
+
+                    avatarsContainer.appendChild(avatarImg);
+                });
+
+                // 默认选择 st 用户
+                if (users.includes('st')) {
+                    select.value = 'st';
+                    selectAvailableUser();
+                    // 高亮 st 的头像
+                    const stAvatar = avatarsContainer.querySelector('img[alt="st"]');
+                    if (stAvatar) {
+                        stAvatar.style.border = '2px solid rgb(120, 189, 253)';
+                    }
+                }
+            } catch (error) {
+                console.error('加载可用用户失败:', error);
+            }
+        }
+
+        // 切换登录模式
+        function toggleLoginMode() {
+            const mode = document.getElementById('loginMode').value;
+            const availableUserRow = document.getElementById('availableUserRow');
+            const usernameRow = document.getElementById('usernameRow');
+            const passwordRow = document.getElementById('passwordRow');
+
+            if (mode === 'available') {
+                availableUserRow.style.display = '';
+                usernameRow.style.display = 'none';
+                passwordRow.style.display = 'none'; // 隐藏密码框，不需要密码
+                loadAvailableUsers();
+            } else {
+                availableUserRow.style.display = 'none';
+                usernameRow.style.display = '';
+                passwordRow.style.display = '';
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        // 选择可用用户
+        function selectAvailableUser() {
+            const selectedUser = document.getElementById('availableUser').value;
+            const avatarsContainer = document.getElementById('userAvatars');
+
+            // 重置所有头像边框
+            if (avatarsContainer) {
+                avatarsContainer.querySelectorAll('img').forEach(img => {
+                    img.style.border = '2px solid transparent';
+                    img.style.transform = 'scale(1)';
+                });
+            }
+
+            if (selectedUser) {
+                // 自动填充用户名
+                document.getElementById('username').value = selectedUser;
+                document.getElementById('password').value = '';
+
+                // 高亮选中的头像
+                const selectedAvatar = avatarsContainer.querySelector(`img[alt="${selectedUser}"]`);
+                if (selectedAvatar) {
+                    selectedAvatar.style.border = '2px solid rgb(120, 189, 253)';
+                }
+                // 不再自动调用login，用户需手动点击登录按钮
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('DOMContentLoaded', function () {
+            // 默认选择可用用户模式
+            toggleLoginMode();
+        });
+
+        // 登录函数
+        function login() {
+            //检验输入是否正确
+            var username = "";
+            var pwd = "";
+
+            // 检查是否是可用用户模式
+            var loginMode = document.getElementById("loginMode");
+            if (loginMode && loginMode.value === "available") {
+                var availableUser = document.getElementById("availableUser");
+                if (availableUser) {
+                    username = availableUser.value.trim();
+                }
+                pwd = "";
+            } else {
+                username = document.getElementById("username").value.trim();
+                pwd = document.getElementById("password").value.trim();
+            }
+
+            if (username == "") {
+                alert("请输入用户名！");
+                return false;
+            }
+            if (loginMode && loginMode.value !== "available" && pwd == "") {
+                alert("请输入密码！");
+                return false;
+            }
+
+            // 登录成功后跳转到首页并带上userName参数
+            window.location.href = "../index.html?userName=" + encodeURIComponent(username);
+        }
     </script>
-    <script src="../js/socket.io.js"></script>
-    <script src="../js/reg.js"></script>
 </body>
+
 </html>

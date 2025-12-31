@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64编解码工具 - Base64编码解码在线工具 | Buttonwood工具</title>
+    <meta name="description" content="免费在线Base64编解码工具，支持文本和文件的Base64编码解码，快速处理Base64数据。">
+    <meta name="keywords" content="Base64编码,Base64解码,Base64工具,Base64转换">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://buttonwood.cn/tools/base64.html">
+    <link rel="shortcut icon" href="../img/logo.png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/font.css">
+    <meta name="google-adsense-account" content="ca-pub-9340624494211701">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701"
+        crossorigin="anonymous"></script>
+    <style>
+        .tool-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #3d3d3d;
+        }
+
+        .tool-section {
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        .btn {
+            background-color: rgb(120, 189, 253);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background-color: rgb(92, 156, 214);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: rgb(120, 189, 253);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .file-input {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body onload="loaduser()" id="home">
+    <div class="container">
+        <div class="left-box" id="left-box"></div>
+        <script>
+            function isMobileDevice() {
+                return window.innerWidth / window.innerHeight < 1.2;
+            }
+            function setLeftBoxWidth() {
+                const leftBox = document.getElementById('left-box');
+                const handler = document.querySelector('.handler');
+                const containerWidth = document.querySelector('.container').offsetWidth;
+                const menuButton = document.getElementById('menu-button');
+                if (isMobileDevice()) {
+                    leftBox.style.width = '0';
+                    if (handler) handler.style.left = "5px";
+                    if (handler) handler.classList.add('close');
+                    if (menuButton) menuButton.style.display = 'block';
+                } else {
+                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
+                    leftBox.style.width = sidebarWidth + 'px';
+                    if (handler) handler.style.left = (sidebarWidth + 5) + "px";
+                    if (handler) handler.classList.remove('close');
+                    if (menuButton) menuButton.style.display = 'none';
+                }
+            }
+            fetch('../leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+                    // 修复路径：将 img/ 替换为 ../img/
+                    data = data.replace(/src="img\//g, 'src="../img/');
+                    document.getElementById('left-box').innerHTML = data;
+                    // 确保图片路径正确（再次检查）
+                    const userImage = document.querySelector(".user-info img");
+                    if (userImage && !userImage.src.includes('../img/')) {
+                        userImage.src = "../img/bw.jpg";
+                    }
+                    // 修复图标背景图片路径
+                    setTimeout(() => {
+                        const iconMap = {
+                            'icon-home': '../img/icon/home.png',
+                            'icon-design': '../img/icon/灯泡.png',
+                            'icon-art': '../img/icon/笔.png',
+                            'icon-photo': '../img/icon/相机.png',
+                            'icon-create': '../img/icon/册子.png',
+                            'icon-tools': '../img/icon/几何.png',
+                            'aboutUs': '../img/icon/爱情.png'
+                        };
+                        Object.keys(iconMap).forEach(className => {
+                            const icons = document.querySelectorAll(`.left-box .${className}`);
+                            icons.forEach(icon => {
+                                icon.style.backgroundImage = `url("${iconMap[className]}")`;
+                            });
+                        });
+                    }, 100);
+                    setLeftBoxWidth();
+                    window.addEventListener('resize', setLeftBoxWidth);
+                    const menuButton = document.getElementById('menu-button');
+                    const leftBox = document.getElementById('left-box');
+                    const handler = document.querySelector('.handler');
+                    if (menuButton) {
+                        menuButton.addEventListener('click', function () {
+                            this.classList.toggle('active');
+                            if (leftBox.style.width === '0px') {
+                                leftBox.style.width = '210px';
+                                if (handler) handler.style.left = "215px";
+                                if (handler) handler.classList.remove('close');
+                            } else {
+                                leftBox.style.width = '0';
+                                if (handler) handler.style.left = "5px";
+                                if (handler) handler.classList.add('close');
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+        </script>
+
+        <div class="right-box" style="background: none;">
+            <div class="right-top">
+                <div class="menu-button" id="menu-button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <i class="icon-art"></i>
+                <span>Base64编解码</span>
+                <span class="right-top-span-2">Base64编码解码工具</span>
+            </div>
+
+            <div class="tool-container">
+                <a href="../tools.html" class="back-link">← 返回工具列表</a>
+
+                <div class="tool-title">Base64编解码工具</div>
+
+                <div class="tool-section">
+                    <div class="file-input">
+                        <input type="file" id="fileInput" onchange="handleFileSelect(event)">
+                    </div>
+                    <textarea id="textInput" placeholder="请输入要编码的文本或粘贴Base64字符串进行解码..."></textarea>
+                </div>
+
+                <div class="tool-section">
+                    <button class="btn" onclick="encodeBase64()">编码 (Encode)</button>
+                    <button class="btn" onclick="decodeBase64()">解码 (Decode)</button>
+                    <button class="btn" onclick="clearText()">清空</button>
+                    <button class="btn" onclick="copyText()">复制结果</button>
+                </div>
+
+                <!-- 广告位 -->
+                <div style="margin: 30px 0; text-align: center;">
+                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9340624494211701"
+                        data-ad-slot="1234567895" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+
+            <div class="handler"></div>
+        </div>
+    </div>
+
+    <script src="../js/reg.js"></script>
+    <script>
+        function encodeBase64() {
+            const input = document.getElementById('textInput').value;
+            if (!input) {
+                alert('请输入要编码的文本');
+                return;
+            }
+            try {
+                const encoded = btoa(unescape(encodeURIComponent(input)));
+                document.getElementById('textInput').value = encoded;
+            } catch (e) {
+                alert('编码失败: ' + e.message);
+            }
+        }
+
+        function decodeBase64() {
+            const input = document.getElementById('textInput').value.trim();
+            if (!input) {
+                alert('请输入要解码的Base64字符串');
+                return;
+            }
+            try {
+                const decoded = decodeURIComponent(escape(atob(input)));
+                document.getElementById('textInput').value = decoded;
+            } catch (e) {
+                alert('解码失败，请检查Base64格式是否正确: ' + e.message);
+            }
+        }
+
+        function clearText() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('fileInput').value = '';
+        }
+
+        function copyText() {
+            const text = document.getElementById('textInput').value;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制到剪贴板');
+            }).catch(err => {
+                alert('复制失败: ' + err);
+            });
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const arrayBuffer = e.target.result;
+                const bytes = new Uint8Array(arrayBuffer);
+                let binary = '';
+                for (let i = 0; i < bytes.length; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                const base64 = btoa(binary);
+                document.getElementById('textInput').value = base64;
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+
+</html>

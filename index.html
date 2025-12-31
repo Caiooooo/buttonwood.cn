@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <title>寻声 - 打破第四面墙 | Buttonwood的量化交易博客</title>
@@ -9,7 +10,7 @@
     <meta name="keywords" content="Buttonwood博客,量化交易,币圈量化,区块链技术,DeFi,加密货币,算法交易,技术博客,编程,智能合约,套利策略">
     <meta name="author" content="Buttonwood">
     <meta name="robots" content="index,follow">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://buttonwood.cn/">
@@ -17,21 +18,22 @@
     <meta property="og:description" content="寻声是Buttonwood的个人博客，专注于币圈量化交易、区块链技术、DeFi协议开发。分享量化策略、算法交易、加密货币投资经验和技术创新。">
     <meta property="og:image" content="https://buttonwood.cn/img/logo.png">
     <meta property="og:site_name" content="寻声博客">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://buttonwood.cn/">
     <meta property="twitter:title" content="寻声 - 打破第四面墙 | Buttonwood的量化交易博客">
-    <meta property="twitter:description" content="寻声是Buttonwood的个人博客，专注于币圈量化交易、区块链技术、DeFi协议开发。分享量化策略、算法交易、加密货币投资经验和技术创新。">
+    <meta property="twitter:description"
+        content="寻声是Buttonwood的个人博客，专注于币圈量化交易、区块链技术、DeFi协议开发。分享量化策略、算法交易、加密货币投资经验和技术创新。">
     <meta property="twitter:image" content="https://buttonwood.cn/img/logo.png">
-    
+
     <!-- 网站链接 -->
     <link rel="canonical" href="https://buttonwood.cn/">
     <link rel="shortcut icon" href="img/logo.png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/font.css">
     <link rel="sitemap" type="application/xml" title="Sitemap" href="https://buttonwood.cn/sitemap.xml">
-    
+
     <!-- 结构化数据 -->
     <script type="application/ld+json">
     {
@@ -53,12 +55,14 @@
     }
     </script>
     <meta name="google-adsense-account" content="ca-pub-9340624494211701">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701"
+        crossorigin="anonymous"></script>
 </head>
-<body onload="loaduser()" id="home">
+
+<body id="home">
     <div class="container">
         <!--        侧边栏目    -->
-        
+
         <!-- 在页面中加入一个容器 -->
         <div class="left-box" id="left-box"></div>
         <script>
@@ -73,7 +77,7 @@
                 const handler = document.querySelector('.handler');
                 const containerWidth = document.querySelector('.container').offsetWidth;
                 const menuButton = document.getElementById('menu-button');
-                
+
                 if (isMobileDevice()) {
                     leftBox.style.width = '0';
                     handler.style.left = "5px";
@@ -96,7 +100,7 @@
                     document.getElementById('left-box').innerHTML = data;
                     const items = document.querySelectorAll('.item');
                     items[0].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                    
+
                     // 初始设置宽度
                     setLeftBoxWidth();
 
@@ -106,9 +110,9 @@
                     // 添加菜单按钮点击事件
                     const leftBox = document.getElementById('left-box');
                     const handler = document.querySelector('.handler');
-                    
+
                     const menuButton = document.getElementById('menu-button');
-                    menuButton.addEventListener('click', function() {
+                    menuButton.addEventListener('click', function () {
                         this.classList.toggle('active');
                         if (leftBox.style.width === '0px') {
                             leftBox.style.width = '210px';
@@ -138,16 +142,19 @@
                 <video id="background_video" loop muted></video>
                 <div id="video_cover"></div>
                 <div id="overlay"></div>
-            
+
                 <section id="main_content">
                     <div id="head">
                         <h1 style="font-family: fa;font-size: 300%;font-weight: 300;">
                             <img src="img/whitelogo.png" style="width: 100px; margin-bottom: -30px;" id="logo-img">
-                            寻声</h1>
+                            寻声
+                        </h1>
                         <p class="sub_head">Buttonwood的量化交易博客</p>
-                        <p class="info">欢迎来到Buttonwood的量化交易博客，这里专注分享币圈量化策略、区块链技术、DeFi协议开发等专业内容。Buttonwood致力于通过技术创新推动加密货币投资的智能化，欢迎探索交流。</p>
+                        <p class="info">
+                            欢迎来到Buttonwood的量化交易博客，这里专注分享币圈量化策略、区块链技术、DeFi协议开发等专业内容。Buttonwood致力于通过技术创新推动加密货币投资的智能化，欢迎探索交流。
+                        </p>
                     </div>
-            
+
                     <div id="links">
                         <a href="designIdea.html">开始探索</a>
                         <a href="createIdea.html">查看博客</a>
@@ -169,7 +176,7 @@
             const overlay = document.getElementById('overlay');
             const mainContent = document.getElementById('main_content');
             const logoImg = document.getElementById('logo-img');
-            
+
             if (isMobileDevice()) {
                 // 移动端样式
                 container.style.background = '#F8F8FF';
@@ -208,5 +215,27 @@
         // 监听窗口大小变化
         window.addEventListener('resize', handleMobileLayout);
     </script>
+    <script>
+        function getQueryParam(name) {
+            const url = window.location.search;
+            const params = new URLSearchParams(url);
+            return params.get(name);
+        }
+        function setUserInfoFromQuery() {
+            const userName = getQueryParam('userName');
+            if (userName) {
+                // 修改左下角用户名
+                const userNameElem = document.getElementById('userName');
+                if (userNameElem) userNameElem.textContent = userName;
+                // 修改头像，强制刷新防缓存
+                const userAvatarElem = document.getElementById('userPhoto') || document.querySelector('.user-info img');
+                if (userAvatarElem) userAvatarElem.src = '/img/userAvatar/' + userName + '.jpg?t=' + Date.now();
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(setUserInfoFromQuery, 500);
+        });
+    </script>
 </body>
+
 </html>

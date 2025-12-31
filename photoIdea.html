@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,11 +15,13 @@
     <script src="js/mapData.js"></script>
     <script src="js/reg.js"></script>
     <meta name="google-adsense-account" content="ca-pub-9340624494211701">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701"
+        crossorigin="anonymous"></script>
 </head>
+
 <body onload="chk(),loaduser()" id="home">
     <div class="container">
-        
+
         <div class="left-box" id="left-box"></div>
         <script>
             // 检测是否为移动设备
@@ -32,7 +35,7 @@
                 const handler = document.querySelector('.handler');
                 const containerWidth = document.querySelector('.container').offsetWidth;
                 const menuButton = document.getElementById('menu-button');
-                
+
                 if (isMobileDevice()) {
                     leftBox.style.width = '0';
                     handler.style.left = "5px";
@@ -56,7 +59,7 @@
                     document.getElementById('left-box').innerHTML = data;
                     const items = document.querySelectorAll('.item');
                     items[3].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                    
+
                     // 初始设置宽度
                     setLeftBoxWidth();
 
@@ -67,8 +70,8 @@
                     const menuButton = document.getElementById('menu-button');
                     const leftBox = document.getElementById('left-box');
                     const handler = document.querySelector('.handler');
-                    
-                    menuButton.addEventListener('click', function() {
+
+                    menuButton.addEventListener('click', function () {
                         this.classList.toggle('active');
                         if (leftBox.style.width === '0px') {
                             leftBox.style.width = '210px';
@@ -85,7 +88,7 @@
         </script>
         <div class="right-box">
             <div class="right-top">
-                
+
                 <!-- 移动端菜单按钮 -->
                 <div class="menu-button" id="menu-button">
                     <span></span>
@@ -105,6 +108,73 @@
 
                 <div id="china-map" style="width: 100%;height:100%;"></div>
                 <script src="js/china-map.js"></script>
+                <script>
+                    function getQueryParam(name) {
+                        const url = window.location.search;
+                        const params = new URLSearchParams(url);
+                        return params.get(name);
+                    }
+                    function loadUserMapData(callback) {
+                        const userName = getQueryParam('userName');
+                        if (userName) {
+                            fetch('js/mapData/' + userName + '.json')
+                                .then(res => res.ok ? res.json() : Promise.reject())
+                                .then(json => callback(json))
+                                .catch(() => callback(window.data));
+                        } else {
+                            callback(window.data);
+                        }
+                    }
+                </script>
+                <script>
+                    function renderChinaMap(mapData) {
+                        var chinaMap = echarts.init(document.getElementById("china-map"));
+                        window.onresize = chinaMap.resize;
+                        const leftBox = document.getElementById("left-box");
+                        const resizeObserver = new ResizeObserver(() => { chinaMap.resize(); });
+                        resizeObserver.observe(leftBox);
+                        window.addEventListener("resize", function () { chinaMap.resize(); });
+                        chinaMap.setOption({
+                            tooltip: {
+                                formatter: function (params) {
+                                    let value = params.value.toString();
+                                    if (!isNaN(value)) {
+                                        let year = value.substring(0, 4);
+                                        let month = value.substring(4, 6);
+                                        let day = value.substring(6, 8);
+                                        value = `${year}-${month}-${day}`;
+                                    }
+                                    return params.name + ": " + value;
+                                }
+                            },
+                            dataRange: {
+                                show: false,
+                                min: 0,
+                                max: 9999999999,
+                                text: ["High", "Low"],
+                                realtime: true,
+                                calculable: true,
+                                color: ["orangered", "#FF9B52", "#FFD068"],
+                            },
+                            geo: {
+                                map: "china",
+                                roam: true,
+                                label: { normal: { show: true, textStyle: { color: "#fff" } } },
+                                itemStyle: {
+                                    normal: { borderColor: "#293171", borderWidth: "2", areaColor: "#0A0F33" },
+                                    emphasis: { areaColor: null, shadowOffsetX: 0, shadowOffsetY: 0, shadowBlur: 20, borderWidth: 0, shadowColor: "rgba(0, 0, 0, 0.5)" }
+                                }
+                            },
+                            series: [
+                                { type: "scatter", coordinateSystem: "geo" },
+                                { name: "点亮日期", type: "map", geoIndex: 0, data: mapData }
+                            ]
+                        });
+                    }
+                    loadUserMapData(function (mapData) {
+                        renderChinaMap(mapData);
+                    });
+                </script>
 
             </div>
 
@@ -112,4 +182,5 @@
         </div>
     </div>
 </body>
+
 </html>

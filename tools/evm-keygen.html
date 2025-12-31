@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVM私钥生成器 - 安全生成以太坊私钥和地址 | Buttonwood工具</title>
+    <meta name="description" content="免费在线EVM私钥生成器，安全生成以太坊兼容的私钥、公钥和地址。支持多种格式导出，适用于区块链开发。">
+    <meta name="keywords" content="EVM私钥生成,以太坊私钥,区块链工具,私钥生成器,以太坊地址生成">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://buttonwood.cn/tools/evm-keygen.html">
+    <link rel="shortcut icon" href="../img/logo.png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/font.css">
+    <meta name="google-adsense-account" content="ca-pub-9340624494211701">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <style>
+        .tool-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .tool-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #3d3d3d;
+        }
+
+        .tool-section {
+            margin-bottom: 30px;
+        }
+
+        .tool-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #3d3d3d;
+        }
+
+        .btn {
+            background-color: rgb(120, 189, 253);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: rgb(92, 156, 214);
+        }
+
+        .result-box {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .result-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #3d3d3d;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #856404;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: rgb(120, 189, 253);
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body onload="loaduser()" id="home">
+    <div class="container">
+        <div class="left-box" id="left-box"></div>
+        <script>
+            function isMobileDevice() {
+                return window.innerWidth / window.innerHeight < 1.2;
+            }
+            function setLeftBoxWidth() {
+                const leftBox = document.getElementById('left-box');
+                const handler = document.querySelector('.handler');
+                const containerWidth = document.querySelector('.container').offsetWidth;
+                const menuButton = document.getElementById('menu-button');
+                if (isMobileDevice()) {
+                    leftBox.style.width = '0';
+                    if (handler) handler.style.left = "5px";
+                    if (handler) handler.classList.add('close');
+                    if (menuButton) menuButton.style.display = 'block';
+                } else {
+                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
+                    leftBox.style.width = sidebarWidth + 'px';
+                    if (handler) handler.style.left = (sidebarWidth + 5) + "px";
+                    if (handler) handler.classList.remove('close');
+                    if (menuButton) menuButton.style.display = 'none';
+                }
+            }
+            fetch('../leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+                    // 修复路径：将 img/ 替换为 ../img/
+                    data = data.replace(/src="img\//g, 'src="../img/');
+                    document.getElementById('left-box').innerHTML = data;
+                    // 确保图片路径正确（再次检查）
+                    const userImage = document.querySelector(".user-info img");
+                    if (userImage && !userImage.src.includes('../img/')) {
+                        userImage.src = "../img/bw.jpg";
+                    }
+                    // 修复图标背景图片路径
+                    setTimeout(() => {
+                        const iconMap = {
+                            'icon-home': '../img/icon/home.png',
+                            'icon-design': '../img/icon/灯泡.png',
+                            'icon-art': '../img/icon/笔.png',
+                            'icon-photo': '../img/icon/相机.png',
+                            'icon-create': '../img/icon/册子.png',
+                            'icon-tools': '../img/icon/几何.png',
+                            'aboutUs': '../img/icon/爱情.png'
+                        };
+                        Object.keys(iconMap).forEach(className => {
+                            const icons = document.querySelectorAll(`.left-box .${className}`);
+                            icons.forEach(icon => {
+                                icon.style.backgroundImage = `url("${iconMap[className]}")`;
+                            });
+                        });
+                    }, 100);
+                    setLeftBoxWidth();
+                    window.addEventListener('resize', setLeftBoxWidth);
+                    const menuButton = document.getElementById('menu-button');
+                    const leftBox = document.getElementById('left-box');
+                    const handler = document.querySelector('.handler');
+                    if (menuButton) {
+                        menuButton.addEventListener('click', function () {
+                            this.classList.toggle('active');
+                            if (leftBox.style.width === '0px') {
+                                leftBox.style.width = '210px';
+                                if (handler) handler.style.left = "215px";
+                                if (handler) handler.classList.remove('close');
+                            } else {
+                                leftBox.style.width = '0';
+                                if (handler) handler.style.left = "5px";
+                                if (handler) handler.classList.add('close');
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+        </script>
+
+        <div class="right-box" style="background: none;">
+            <div class="right-top">
+                <div class="menu-button" id="menu-button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <i class="icon-art"></i>
+                <span>EVM私钥生成</span>
+                <span class="right-top-span-2">安全生成以太坊私钥和地址</span>
+            </div>
+
+            <div class="tool-container">
+                <a href="../tools.html" class="back-link">← 返回工具列表</a>
+
+                <div class="tool-title">EVM私钥生成器</div>
+
+                <div class="warning">
+                    <strong>⚠️
+                        安全提示：</strong>私钥是您资产的唯一凭证，请妥善保管，不要分享给任何人。本工具在浏览器本地生成，不会上传任何数据到服务器。代码已开源https://github.com/Caiooooo/Caiooooo.github.io
+                </div>
+
+                <div class="tool-section">
+                    <button class="btn" onclick="generateKey()">生成新的私钥</button>
+                </div>
+
+                <div id="result" style="display:none;">
+                    <div class="tool-section">
+                        <div class="result-label">私钥 (Private Key):</div>
+                        <div class="result-box" id="privateKey"></div>
+                    </div>
+
+                    <div class="tool-section">
+                        <div class="result-label">公钥 (Public Key):</div>
+                        <div class="result-box" id="publicKey"></div>
+                    </div>
+
+                    <div class="tool-section">
+                        <div class="result-label">地址 (Address):</div>
+                        <div class="result-box" id="address"></div>
+                    </div>
+
+                    <div class="tool-section">
+                        <button class="btn" onclick="copyToClipboard('privateKey')">复制私钥</button>
+                        <button class="btn" onclick="copyToClipboard('address')"
+                            style="margin-left: 10px;">复制地址</button>
+                    </div>
+                </div>
+
+                <!-- 广告位 -->
+                <div style="margin: 30px 0; text-align: center;">
+                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9340624494211701"
+                        data-ad-slot="1234567892" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+
+            <div class="handler"></div>
+        </div>
+    </div>
+
+    <script src="../js/reg.js"></script>
+    <script>
+        function generateKey() {
+            try {
+                // 使用ethers.js生成随机钱包
+                const wallet = ethers.Wallet.createRandom();
+
+                document.getElementById('privateKey').textContent = wallet.privateKey;
+                document.getElementById('publicKey').textContent = wallet.publicKey;
+                document.getElementById('address').textContent = wallet.address;
+
+                document.getElementById('result').style.display = 'block';
+            } catch (error) {
+                alert('生成失败: ' + error.message);
+            }
+        }
+
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('已复制到剪贴板');
+            }).catch(err => {
+                alert('复制失败: ' + err);
+            });
+        }
+    </script>
+</body>
+
+</html>

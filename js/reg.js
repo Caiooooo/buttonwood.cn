@@ -24,10 +24,33 @@ function reg() {
 function login() {
 
     //检验输入是否正确
-    var username = document.getElementById("username").value.trim();
-    var pwd = document.getElementById("password").value.trim();
-    if (username == "" || pwd == "") {
-        alert("输入不能为空！");
+    var username = "";
+    var pwd = "";
+
+    // 检查是否是可用用户模式
+    var loginMode = document.getElementById("loginMode");
+    if (loginMode && loginMode.value === "available") {
+        // 从下拉框获取用户名
+        var availableUser = document.getElementById("availableUser");
+        if (availableUser) {
+            username = availableUser.value.trim();
+        }
+        // 可用用户模式不需要密码，使用空密码
+        pwd = "";
+    } else {
+        // 手动输入模式
+        username = document.getElementById("username").value.trim();
+        pwd = document.getElementById("password").value.trim();
+    }
+
+    // 可用用户模式下只需要用户名，手动输入模式需要用户名和密码
+    if (username == "") {
+        alert("请输入用户名！");
+        return false;
+    }
+
+    if (loginMode && loginMode.value !== "available" && pwd == "") {
+        alert("请输入密码！");
         return false;
     }
 
@@ -37,11 +60,11 @@ function login() {
 
 
 }
-function loaduser(){
+function loaduser() {
     // 收起侧边栏
     var handler = document.querySelector('.handler');
     var leftBox = document.querySelector('.left-box');
-    
+
     if (handler && leftBox) {
         handler.addEventListener("click", function () {
             if (!this.classList.contains('close')) {
@@ -55,64 +78,71 @@ function loaduser(){
             }
         });
     }
-    
-    //设置侧边栏信息
-    var username = document.getElementById("userName");
-    var url = location.href;
 
-    if (username) {
-        try {
-            // get Params
-            // username.innerHTML = url.split("?")[1].split("=")[1];
-        } catch (error) {
-            username.innerHTML = "bw"; // 处理错误时的备用内容
-        }
-        usrName = username;
-        if (username.innerHTML === "") {
-            var userImage = document.querySelector(".user-info img");
-            if (userImage) {
-                userImage.src = "img/bw.jpg";
-            }
-        }
+    //设置侧边栏信息
+    var usernameElem = document.getElementById("userName");
+    var userPhotoElem = document.getElementById("userPhoto");
+    function getUserNameFromParam() {
+        const url = window.location.search;
+        const params = new URLSearchParams(url);
+        return params.get('userName');
+    }
+    var userName = getUserNameFromParam();
+    if (usernameElem && userName) {
+        usernameElem.innerHTML = userName;
+    }
+    if (userPhotoElem && userName) {
+        userPhotoElem.src = '/img/userAvatar/' + userName + '.jpg';
     }
 }
 //aborted
-function chk(){
+function chk() {
 
 }
 
+// 根据当前页面路径获取正确的前缀
+function getPathPrefix() {
+    var path = window.location.pathname;
+    return path.includes('/tools/') ? "../" : "";
+}
 
-
-
-
-
+function getUserNameParam() {
+    const url = window.location.search;
+    const params = new URLSearchParams(url);
+    const userName = params.get('userName');
+    return userName ? ('?userName=' + encodeURIComponent(userName)) : '';
+}
 
 // jumpJs
-function jumpToChat(){
-    window.location.href="server/chat.html"
+function jumpToChat() {
+    window.location.href = getPathPrefix() + "server/chat.html" + getUserNameParam();
 }
 function jumpToLog() {
-    window.location.href = "server/log.html";
+    window.location.href = getPathPrefix() + "server/log.html" + getUserNameParam();
 }
 function jumpToHo() {
-    window.location.href = "index.html";
+    window.location.href = getPathPrefix() + "index.html" + getUserNameParam();
 }
 function jumpToDe() {
-    window.location.href = "designIdea.html";
+    window.location.href = getPathPrefix() + "designIdea.html" + getUserNameParam();
 }
 function jumpToAr() {
-    window.location.href = "projects.html";
+    window.location.href = getPathPrefix() + "projects.html" + getUserNameParam();
 }
 function jumpToPh() {
-    window.location.href = "photoIdea.html";
+    window.location.href = getPathPrefix() + "photoIdea.html" + getUserNameParam();
 }
 function jumpToCr() {
-    window.location.href = "createIdea.html";
+    window.location.href = getPathPrefix() + "createIdea.html" + getUserNameParam();
 }
 function jumpToAb() {
-    window.location.href = "buttonwood.html";
+    window.location.href = getPathPrefix() + "buttonwood.html" + getUserNameParam();
+}
+
+function jumpToTools() {
+    window.location.href = getPathPrefix() + "tools.html" + getUserNameParam();
 }
 
 function jumpToIn() {
-    window.location.href = "index.html";
+    window.location.href = getPathPrefix() + "index.html" + getUserNameParam();
 }

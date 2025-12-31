@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哈希计算工具 - MD5、SHA256、SHA512哈希计算 | Buttonwood工具</title>
+    <meta name="description" content="免费在线哈希计算工具，支持MD5、SHA256、SHA512等多种哈希算法，快速计算文本哈希值。">
+    <meta name="keywords" content="哈希计算,MD5,SHA256,SHA512,哈希工具,哈希值计算">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://buttonwood.cn/tools/hash.html">
+    <link rel="shortcut icon" href="../img/logo.png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/font.css">
+    <meta name="google-adsense-account" content="ca-pub-9340624494211701">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.js"></script>
+    <style>
+        .tool-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .tool-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #3d3d3d;
+        }
+        .tool-section {
+            margin-bottom: 30px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        .btn {
+            background-color: rgb(120, 189, 253);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background-color: rgb(92, 156, 214);
+        }
+        .result-box {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .result-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #3d3d3d;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: rgb(120, 189, 253);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body onload="loaduser()" id="home">
+    <div class="container">
+        <div class="left-box" id="left-box"></div>
+        <script>
+            function isMobileDevice() {
+                return window.innerWidth / window.innerHeight < 1.2;
+            }
+            function setLeftBoxWidth() {
+                const leftBox = document.getElementById('left-box');
+                const handler = document.querySelector('.handler');
+                const containerWidth = document.querySelector('.container').offsetWidth;
+                const menuButton = document.getElementById('menu-button');
+                if (isMobileDevice()) {
+                    leftBox.style.width = '0';
+                    if(handler) handler.style.left = "5px";
+                    if(handler) handler.classList.add('close');
+                    if(menuButton) menuButton.style.display = 'block';
+                } else {
+                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
+                    leftBox.style.width = sidebarWidth + 'px';
+                    if(handler) handler.style.left = (sidebarWidth + 5) + "px";
+                    if(handler) handler.classList.remove('close');
+                    if(menuButton) menuButton.style.display = 'none';
+                }
+            }
+            fetch('../leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+                    // 修复路径：将 img/ 替换为 ../img/
+                    data = data.replace(/src="img\//g, 'src="../img/');
+                    document.getElementById('left-box').innerHTML = data;
+                    // 确保图片路径正确（再次检查）
+                    const userImage = document.querySelector(".user-info img");
+                    if (userImage && !userImage.src.includes('../img/')) {
+                        userImage.src = "../img/bw.jpg";
+                    }
+                    // 修复图标背景图片路径
+                    setTimeout(() => {
+                        const iconMap = {
+                            'icon-home': '../img/icon/home.png',
+                            'icon-design': '../img/icon/灯泡.png',
+                            'icon-art': '../img/icon/笔.png',
+                            'icon-photo': '../img/icon/相机.png',
+                            'icon-create': '../img/icon/册子.png',
+                            'icon-tools': '../img/icon/几何.png',
+                            'aboutUs': '../img/icon/爱情.png'
+                        };
+                        Object.keys(iconMap).forEach(className => {
+                            const icons = document.querySelectorAll(`.left-box .${className}`);
+                            icons.forEach(icon => {
+                                icon.style.backgroundImage = `url("${iconMap[className]}")`;
+                            });
+                        });
+                    }, 100);
+                    setLeftBoxWidth();
+                    window.addEventListener('resize', setLeftBoxWidth);
+                    const menuButton = document.getElementById('menu-button');
+                    const leftBox = document.getElementById('left-box');
+                    const handler = document.querySelector('.handler');
+                    if(menuButton) {
+                        menuButton.addEventListener('click', function() {
+                            this.classList.toggle('active');
+                            if (leftBox.style.width === '0px') {
+                                leftBox.style.width = '210px';
+                                if(handler) handler.style.left = "215px";
+                                if(handler) handler.classList.remove('close');
+                            } else {
+                                leftBox.style.width = '0';
+                                if(handler) handler.style.left = "5px";
+                                if(handler) handler.classList.add('close');
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+        </script>
+
+        <div class="right-box" style="background: none;">
+            <div class="right-top">
+                <div class="menu-button" id="menu-button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <i class="icon-art"></i>
+                <span>哈希计算</span>
+                <span class="right-top-span-2">MD5、SHA256、SHA512哈希计算</span>
+            </div>
+            
+            <div class="tool-container">
+                <a href="../tools.html" class="back-link">← 返回工具列表</a>
+                
+                <div class="tool-title">哈希计算工具</div>
+                
+                <div class="tool-section">
+                    <textarea id="hashInput" placeholder="请输入要计算哈希值的文本..."></textarea>
+                </div>
+                
+                <div class="tool-section">
+                    <button class="btn" onclick="calculateAll()">计算所有哈希</button>
+                    <button class="btn" onclick="clearHash()">清空</button>
+                </div>
+                
+                <div id="hashResults"></div>
+                
+                <!-- 广告位 -->
+                <div style="margin: 30px 0; text-align: center;">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-9340624494211701"
+                         data-ad-slot="1234567896"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+            
+            <div class="handler"></div>
+        </div>
+    </div>
+    
+    <script src="../js/reg.js"></script>
+    <script>
+        function calculateAll() {
+            const input = document.getElementById('hashInput').value;
+            if (!input) {
+                alert('请输入要计算哈希值的文本');
+                return;
+            }
+            
+            const results = document.getElementById('hashResults');
+            results.innerHTML = '';
+            
+            const algorithms = [
+                { name: 'MD5', func: CryptoJS.MD5 },
+                { name: 'SHA1', func: CryptoJS.SHA1 },
+                { name: 'SHA256', func: CryptoJS.SHA256 },
+                { name: 'SHA512', func: CryptoJS.SHA512 }
+            ];
+            
+            algorithms.forEach(algo => {
+                try {
+                    const hash = algo.func(input).toString();
+                    const section = document.createElement('div');
+                    section.className = 'tool-section';
+                    section.innerHTML = `
+                        <div class="result-label">${algo.name}:</div>
+                        <div class="result-box">
+                            ${hash}
+                            <button class="btn" onclick="copyHash('${hash}')" style="float: right; margin-top: -5px; padding: 5px 10px; font-size: 12px;">复制</button>
+                        </div>
+                    `;
+                    results.appendChild(section);
+                } catch (e) {
+                    console.error(`Error calculating ${algo.name}:`, e);
+                }
+            });
+        }
+        
+        function copyHash(hash) {
+            navigator.clipboard.writeText(hash).then(() => {
+                alert('已复制到剪贴板');
+            }).catch(err => {
+                alert('复制失败: ' + err);
+            });
+        }
+        
+        function clearHash() {
+            document.getElementById('hashInput').value = '';
+            document.getElementById('hashResults').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
+

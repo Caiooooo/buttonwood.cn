@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间戳转换工具 - Unix时间戳与日期时间互转 | Buttonwood工具</title>
+    <meta name="description" content="免费在线时间戳转换工具，支持Unix时间戳与日期时间互转，多种时区支持，精确到秒和毫秒。">
+    <meta name="keywords" content="时间戳转换,Unix时间戳,日期时间转换,时间戳工具,时间转换器">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="https://buttonwood.cn/tools/timestamp.html">
+    <link rel="shortcut icon" href="../img/logo.png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/font.css">
+    <meta name="google-adsense-account" content="ca-pub-9340624494211701">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701" crossorigin="anonymous"></script>
+    <style>
+        .tool-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .tool-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #3d3d3d;
+        }
+        .tool-section {
+            margin-bottom: 30px;
+        }
+        .tool-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #3d3d3d;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #3d3d3d;
+        }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .btn {
+            background-color: rgb(120, 189, 253);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: rgb(92, 156, 214);
+        }
+        .result-box {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: rgb(120, 189, 253);
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .current-time {
+            background-color: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body onload="loaduser(); updateCurrentTime(); setInterval(updateCurrentTime, 1000);" id="home">
+    <div class="container">
+        <div class="left-box" id="left-box"></div>
+        <script>
+            function isMobileDevice() {
+                return window.innerWidth / window.innerHeight < 1.2;
+            }
+            function setLeftBoxWidth() {
+                const leftBox = document.getElementById('left-box');
+                const handler = document.querySelector('.handler');
+                const containerWidth = document.querySelector('.container').offsetWidth;
+                const menuButton = document.getElementById('menu-button');
+                if (isMobileDevice()) {
+                    leftBox.style.width = '0';
+                    if(handler) handler.style.left = "5px";
+                    if(handler) handler.classList.add('close');
+                    if(menuButton) menuButton.style.display = 'block';
+                } else {
+                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
+                    leftBox.style.width = sidebarWidth + 'px';
+                    if(handler) handler.style.left = (sidebarWidth + 5) + "px";
+                    if(handler) handler.classList.remove('close');
+                    if(menuButton) menuButton.style.display = 'none';
+                }
+            }
+            fetch('../leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+                    // 修复路径：将 img/ 替换为 ../img/
+                    data = data.replace(/src="img\//g, 'src="../img/');
+                    document.getElementById('left-box').innerHTML = data;
+                    // 确保图片路径正确（再次检查）
+                    const userImage = document.querySelector(".user-info img");
+                    if (userImage && !userImage.src.includes('../img/')) {
+                        userImage.src = "../img/bw.jpg";
+                    }
+                    // 修复图标背景图片路径
+                    setTimeout(() => {
+                        const iconMap = {
+                            'icon-home': '../img/icon/home.png',
+                            'icon-design': '../img/icon/灯泡.png',
+                            'icon-art': '../img/icon/笔.png',
+                            'icon-photo': '../img/icon/相机.png',
+                            'icon-create': '../img/icon/册子.png',
+                            'icon-tools': '../img/icon/几何.png',
+                            'aboutUs': '../img/icon/爱情.png'
+                        };
+                        Object.keys(iconMap).forEach(className => {
+                            const icons = document.querySelectorAll(`.left-box .${className}`);
+                            icons.forEach(icon => {
+                                icon.style.backgroundImage = `url("${iconMap[className]}")`;
+                            });
+                        });
+                    }, 100);
+                    setLeftBoxWidth();
+                    window.addEventListener('resize', setLeftBoxWidth);
+                    const menuButton = document.getElementById('menu-button');
+                    const leftBox = document.getElementById('left-box');
+                    const handler = document.querySelector('.handler');
+                    if(menuButton) {
+                        menuButton.addEventListener('click', function() {
+                            this.classList.toggle('active');
+                            if (leftBox.style.width === '0px') {
+                                leftBox.style.width = '210px';
+                                if(handler) handler.style.left = "215px";
+                                if(handler) handler.classList.remove('close');
+                            } else {
+                                leftBox.style.width = '0';
+                                if(handler) handler.style.left = "5px";
+                                if(handler) handler.classList.add('close');
+                            }
+                        });
+                    }
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+        </script>
+
+        <div class="right-box" style="background: none;">
+            <div class="right-top">
+                <div class="menu-button" id="menu-button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <i class="icon-art"></i>
+                <span>时间戳转换</span>
+                <span class="right-top-span-2">Unix时间戳与日期时间互转</span>
+            </div>
+            
+            <div class="tool-container">
+                <a href="../tools.html" class="back-link">← 返回工具列表</a>
+                
+                <div class="tool-title">时间戳转换工具</div>
+                
+                <div class="current-time">
+                    <strong>当前时间：</strong>
+                    <span id="currentTime"></span>
+                    <br>
+                    <strong>当前时间戳（秒）：</strong>
+                    <span id="currentTimestamp"></span>
+                    <br>
+                    <strong>当前时间戳（毫秒）：</strong>
+                    <span id="currentTimestampMs"></span>
+                </div>
+                
+                <div class="tool-section">
+                    <h3>时间戳转日期</h3>
+                    <div class="input-group">
+                        <label>时间戳（支持秒或毫秒）：</label>
+                        <input type="text" id="timestampInput" placeholder="例如: 1609459200 或 1609459200000">
+                    </div>
+                    <button class="btn" onclick="timestampToDate()">转换为日期</button>
+                    <div id="dateResult" class="result-box" style="display:none;"></div>
+                </div>
+                
+                <div class="tool-section">
+                    <h3>日期转时间戳</h3>
+                    <div class="input-group">
+                        <label>日期时间：</label>
+                        <input type="datetime-local" id="dateInput">
+                    </div>
+                    <button class="btn" onclick="dateToTimestamp()">转换为时间戳</button>
+                    <div id="timestampResult" class="result-box" style="display:none;"></div>
+                </div>
+                
+                <!-- 广告位 -->
+                <div style="margin: 30px 0; text-align: center;">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-9340624494211701"
+                         data-ad-slot="1234567893"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+            
+            <div class="handler"></div>
+        </div>
+    </div>
+    
+    <script src="../js/reg.js"></script>
+    <script>
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleString('zh-CN');
+            document.getElementById('currentTimestamp').textContent = Math.floor(now.getTime() / 1000);
+            document.getElementById('currentTimestampMs').textContent = now.getTime();
+        }
+        
+        function timestampToDate() {
+            const timestamp = document.getElementById('timestampInput').value.trim();
+            if (!timestamp) {
+                alert('请输入时间戳');
+                return;
+            }
+            
+            let date;
+            // 判断是秒还是毫秒（大于10位数认为是毫秒）
+            if (timestamp.length > 10) {
+                date = new Date(parseInt(timestamp));
+            } else {
+                date = new Date(parseInt(timestamp) * 1000);
+            }
+            
+            if (isNaN(date.getTime())) {
+                alert('无效的时间戳');
+                return;
+            }
+            
+            const result = document.getElementById('dateResult');
+            result.style.display = 'block';
+            result.innerHTML = `
+                <strong>本地时间：</strong>${date.toLocaleString('zh-CN')}<br>
+                <strong>UTC时间：</strong>${date.toUTCString()}<br>
+                <strong>ISO格式：</strong>${date.toISOString()}<br>
+                <strong>年-月-日：</strong>${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}<br>
+                <strong>时:分:秒：</strong>${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}
+            `;
+        }
+        
+        function dateToTimestamp() {
+            const dateInput = document.getElementById('dateInput').value;
+            if (!dateInput) {
+                alert('请选择日期时间');
+                return;
+            }
+            
+            const date = new Date(dateInput);
+            const timestampSeconds = Math.floor(date.getTime() / 1000);
+            const timestampMs = date.getTime();
+            
+            const result = document.getElementById('timestampResult');
+            result.style.display = 'block';
+            result.innerHTML = `
+                <strong>时间戳（秒）：</strong>${timestampSeconds}<br>
+                <strong>时间戳（毫秒）：</strong>${timestampMs}
+            `;
+        }
+        
+        // 回车键转换
+        document.getElementById('timestampInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                timestampToDate();
+            }
+        });
+    </script>
+</body>
+</html>
+

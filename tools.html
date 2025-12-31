@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实用工具 - EVM私钥生成、时间戳转换等在线工具 | Buttonwood工具集</title>
+    <meta name="description" content="提供EVM私钥生成、时间戳转换、JSON格式化等多种实用在线工具。免费、安全、便捷的开发者工具集合，助力区块链开发和日常编程工作。">
+    <meta name="keywords" content="在线工具,EVM私钥生成,时间戳转换,JSON格式化,区块链工具,开发者工具,Buttonwood工具,实用工具">
+    <meta name="author" content="Buttonwood">
+    <meta name="robots" content="index,follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://buttonwood.cn/tools.html">
+    <meta property="og:title" content="实用工具 - EVM私钥生成、时间戳转换等在线工具">
+    <meta property="og:description" content="提供EVM私钥生成、时间戳转换、JSON格式化等多种实用在线工具。免费、安全、便捷的开发者工具集合。">
+    <meta property="og:image" content="https://buttonwood.cn/img/logo.png">
+    <meta property="og:site_name" content="寻声博客">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://buttonwood.cn/tools.html">
+    <meta property="twitter:title" content="实用工具 - EVM私钥生成、时间戳转换等在线工具">
+    <meta property="twitter:description" content="提供EVM私钥生成、时间戳转换、JSON格式化等多种实用在线工具。免费、安全、便捷的开发者工具集合。">
+    <meta property="twitter:image" content="https://buttonwood.cn/img/logo.png">
+
+    <!-- 网站链接 -->
+    <link rel="canonical" href="https://buttonwood.cn/tools.html">
+    <link rel="shortcut icon" href="img/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/font.css">
+
+    <!-- 结构化数据 -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Buttonwood实用工具集",
+      "url": "https://buttonwood.cn/tools.html",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "CNY"
+      },
+      "description": "提供EVM私钥生成、时间戳转换等多种实用在线工具",
+      "featureList": ["EVM私钥生成", "时间戳转换", "JSON格式化"]
+    }
+    </script>
+
+    <!-- Google AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-9340624494211701">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701"
+        crossorigin="anonymous"></script>
+
+    <style>
+        .tool-card {
+            background-color: #fff;
+            width: 300px;
+            min-height: 120px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 1px 1px 3px 3px rgb(218, 217, 217);
+            transition: 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .tool-card:hover {
+            box-shadow: 1px 1px 5px 5px rgb(189, 189, 189);
+            transform: translateY(-5px);
+        }
+
+        .tool-card-content {
+            padding: 20px;
+        }
+
+        .tool-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .tool-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #3d3d3d;
+            margin-bottom: 8px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .tool-des {
+            font-size: 12px;
+            color: #909090;
+            line-height: 1.5;
+        }
+
+        .ad-container {
+            margin: 30px auto;
+            text-align: center;
+            max-width: 728px;
+        }
+
+        .ad-container-top {
+            margin: 20px auto;
+            text-align: center;
+            max-width: 728px;
+        }
+    </style>
+</head>
+
+<body onload="loaduser()" id="home">
+    <div class="container">
+        <!-- 在页面中加入一个容器 -->
+        <div class="left-box" id="left-box"></div>
+        <script>
+            // 检测是否为移动设备
+            function isMobileDevice() {
+                return window.innerWidth / window.innerHeight < 1.2;
+            }
+
+            // 设置左侧栏宽度
+            function setLeftBoxWidth() {
+                const leftBox = document.getElementById('left-box');
+                const handler = document.querySelector('.handler');
+                const containerWidth = document.querySelector('.container').offsetWidth;
+                const menuButton = document.getElementById('menu-button');
+
+                if (isMobileDevice()) {
+                    leftBox.style.width = '0';
+                    handler.style.left = "5px";
+                    handler.classList.add('close');
+                    menuButton.style.display = 'block';
+                } else {
+                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
+                    leftBox.style.width = sidebarWidth + 'px';
+                    handler.style.left = (sidebarWidth + 5) + "px";
+                    handler.classList.remove('close');
+                    menuButton.style.display = 'none';
+                }
+            }
+
+            // 使用 JavaScript 动态加载 left-box.html
+            fetch('leftbox.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('left-box').innerHTML = data;
+                    const items = document.querySelectorAll('.item');
+                    // 找到实用工具项并高亮
+                    items.forEach((item, index) => {
+                        if (item.textContent.includes('实用工具')) {
+                            item.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                        }
+                    });
+
+                    setLeftBoxWidth();
+                    window.addEventListener('resize', setLeftBoxWidth);
+
+                    const menuButton = document.getElementById('menu-button');
+                    const leftBox = document.getElementById('left-box');
+                    const handler = document.querySelector('.handler');
+
+                    menuButton.addEventListener('click', function () {
+                        this.classList.toggle('active');
+                        if (leftBox.style.width === '0px') {
+                            leftBox.style.width = '210px';
+                            handler.style.left = "215px";
+                            handler.classList.remove('close');
+                        } else {
+                            leftBox.style.width = '0';
+                            handler.style.left = "5px";
+                            handler.classList.add('close');
+                        }
+                    });
+                })
+                .catch(error => console.error('Error loading left-box.html:', error));
+        </script>
+
+        <div class="right-box" style="background: none;">
+            <div class="right-top">
+                <div class="menu-button" id="menu-button">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <i class="icon-art"></i>
+                <span>实用工具</span>
+                <span class="right-top-span-2">免费在线工具集合</span>
+                <p><br></p>
+            </div>
+
+            <!-- 顶部广告位 -->
+            <div class="ad-container-top">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9340624494211701"
+                    data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <div class="cardList">
+                <a href="tools/evm-keygen.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🔑</div>
+                            <div class="tool-name">EVM私钥生成</div>
+                            <div class="tool-des">安全生成以太坊兼容的私钥和地址，代码开源</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/timestamp.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">⏰</div>
+                            <div class="tool-name">时间戳转换</div>
+                            <div class="tool-des">Unix时间戳与日期时间互转，支持多种时区</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/json-formatter.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">📝</div>
+                            <div class="tool-name">JSON格式化</div>
+                            <div class="tool-des">JSON数据格式化、压缩、验证和美化工具</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/base64.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🔐</div>
+                            <div class="tool-name">Base64编解码</div>
+                            <div class="tool-des">Base64编码和解码工具，支持文本和文件</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/hash.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">#️⃣</div>
+                            <div class="tool-name">哈希计算</div>
+                            <div class="tool-des">MD5、SHA256、SHA512等多种哈希算法计算</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/image-compress.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🖼️</div>
+                            <div class="tool-name">图片压缩</div>
+                            <div class="tool-des">在线压缩图片，支持调整质量和尺寸，减小文件大小</div>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+            <!-- 中间广告位 -->
+            <div class="ad-container">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9340624494211701"
+                    data-ad-slot="1234567891" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+
+            <div class="handler"></div>
+        </div>
+    </div>
+    <script src="js/reg.js"></script>
+</body>
+
+</html>

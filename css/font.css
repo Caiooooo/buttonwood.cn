@@ -25,6 +25,16 @@
     background-image: url(../img/icon/灯泡.png);
 }
 
+.icon-tools {
+    margin-right: 16px;
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-image: url(../img/icon/几何.png);
+}
+
 .icon-art {
     margin-right: 16px;
     width: 25px;
