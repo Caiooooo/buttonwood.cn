@@ -8,6 +8,8 @@ var data=[
     {value:"20240219", name:"江西"},
     {value:"20120119", name:"香港"},
     {value:"20251006", name:"四川"},
+    {value:"20260108", name:"黑龙江"},
+    {value:"20260112", name:"云南"},
 ];
 
 var dataSt = [
