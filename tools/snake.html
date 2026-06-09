@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇 | Buttonwood</title>
+    <link rel="shortcut icon" href="../img/logo.png">
+    <style>
+        :root{--bg:#0a0a14;--cyan:#00e5ff;--text:#e0e0e0;--dim:rgba(255,255,255,0.5)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:-apple-system,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:30px 20px}
+        .back{color:var(--dim);text-decoration:none;font-size:13px;margin-bottom:20px;transition:color .3s;align-self:flex-start}
+        .back:hover{color:var(--cyan)}
+        h1{font-size:26px;margin-bottom:4px}
+        .score{font-size:16px;color:var(--cyan);margin-bottom:12px}
+        canvas{border:1px solid rgba(255,255,255,0.12);border-radius:8px;display:block}
+        .info{color:var(--dim);font-size:12px;margin-top:12px}
+        .restart{margin-top:12px;padding:10px 28px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:var(--cyan);color:#000;transition:all .3s}
+        .restart:hover{box-shadow:0 4px 20px rgba(0,229,255,.3);transform:translateY(-1px)}
+    </style>
+</head>
+<body>
+    <a href="../tools.html" class="back">← 返回工具列表</a>
+    <h1>🐍 贪吃蛇</h1>
+    <div class="score">得分: <span id="score">0</span></div>
+    <canvas id="game"></canvas>
+    <p class="info">方向键 / WASD 控制 · 吃到食物得分</p>
+    <button class="restart" onclick="restart()">重新开始</button>
+
+    <script>
+    const canvas=document.getElementById('game');
+    const ctx=canvas.getContext('2d');
+    const size=20,cols=20,rows=20;
+    canvas.width=cols*size;canvas.height=rows*size;
+
+    let snake,dir,food,score,gameOver,loop;
+
+    function restart(){
+        snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+        dir={x:1,y:0};score=0;gameOver=false;
+        document.getElementById('score').textContent='0';
+        spawnFood();
+        if(loop)clearInterval(loop);
+        loop=setInterval(tick,120);
+    }
+
+    function spawnFood(){
+        do{food={x:Math.floor(Math.random()*cols),y:Math.floor(Math.random()*rows)}}
+        while(snake.some(s=>s.x===food.x&&s.y===food.y));
+    }
+
+    function tick(){
+        if(gameOver)return;
+        const head={x:snake[0].x+dir.x,y:snake[0].y+dir.y};
+        if(head.x<0||head.x>=cols||head.y<0||head.y>=rows||snake.some(s=>s.x===head.x&&s.y===head.y)){
+            gameOver=true;clearInterval(loop);draw();return;
+        }
+        snake.unshift(head);
+        if(head.x===food.x&&head.y===food.y){score++;document.getElementById('score').textContent=score;spawnFood()}
+        else snake.pop();
+        draw();
+    }
+
+    function draw(){
+        ctx.fillStyle='#0a0a14';ctx.fillRect(0,0,canvas.width,canvas.height);
+        snake.forEach((s,i)=>{
+            ctx.fillStyle=i===0?'#00e5ff':'#00e5ff44';
+            ctx.fillRect(s.x*size+1,s.y*size+1,size-2,size-2);
+        });
+        ctx.fillStyle='#ff4081';ctx.fillRect(food.x*size+2,food.y*size+2,size-4,size-4);
+        if(gameOver){ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font='20px sans-serif';ctx.textAlign='center';ctx.fillText('游戏结束',canvas.width/2,canvas.height/2)}
+    }
+
+    document.addEventListener('keydown',e=>{
+        const k=e.key;
+        if(k==='ArrowUp'||k==='w'){if(dir.y!==1){dir={x:0,y:-1};e.preventDefault()}}
+        if(k==='ArrowDown'||k==='s'){if(dir.y!==-1){dir={x:0,y:1};e.preventDefault()}}
+        if(k==='ArrowLeft'||k==='a'){if(dir.x!==1){dir={x:-1,y:0};e.preventDefault()}}
+        if(k==='ArrowRight'||k==='d'){if(dir.x!==-1){dir={x:1,y:0};e.preventDefault()}}
+    });
+
+    restart();
+    </script>
+</body>
+</html>

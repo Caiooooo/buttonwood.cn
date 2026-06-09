@@ -79,121 +79,76 @@
     <meta name="google-adsense-account" content="ca-pub-9340624494211701">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701" crossorigin="anonymous"></script>
 </head>
-<body id="home">
-    <div class="container">
-
-        <div class="left-box" id="left-box"></div>
-        <script>
-            // 检测是否为移动设备
-            function isMobileDevice() {
-                return window.innerWidth / window.innerHeight < 1.2; // 使用宽高比来判断，小于1.2认为是移动设备
-            }
-
-            // 设置左侧栏宽度
-            function setLeftBoxWidth() {
-                const leftBox = document.getElementById('left-box');
-                const handler = document.querySelector('.handler');
-                const containerWidth = document.querySelector('.container').offsetWidth;
-                const menuButton = document.getElementById('menu-button');
-                
-                if (isMobileDevice()) {
-                    leftBox.style.width = '0';
-                    handler.style.left = "5px";
-                    handler.classList.add('close');
-                    menuButton.style.display = 'block';
-                    const rightTopSpan2 = document.querySelector(".right-top-span-2");
-                    if (rightTopSpan2) {
-                        rightTopSpan2.style.display = 'none';
-                    }
-                } else {
-                    // 使用容器宽度的20%作为侧边栏宽度，最小210px
-                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
-                    leftBox.style.width = sidebarWidth + 'px';
-                    handler.style.left = (sidebarWidth + 5) + "px";
-                    handler.classList.remove('close');
-                    menuButton.style.display = 'none';
-                }
-            }
-
-            // 使用 JavaScript 动态加载 left-box.html
-            fetch('leftbox.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('left-box').innerHTML = data;
-                    const items = document.querySelectorAll('.item');
-                    if (items.length > 4) {
-                        items[4].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                    }
-                    
-                    // 初始设置宽度
-                    setLeftBoxWidth();
-
-                    // 监听窗口大小变化
-                    window.addEventListener('resize', setLeftBoxWidth);
-
-                    // 添加菜单按钮点击事件
-                    const menuButton = document.getElementById('menu-button');
-                    const leftBox = document.getElementById('left-box');
-                    const handler = document.querySelector('.handler');
-                    
-                    if (menuButton) {
-                        menuButton.addEventListener('click', function() {
-                            this.classList.toggle('active');
-                            if (leftBox.style.width === '0px') {
-                                leftBox.style.width = '210px';
-                                handler.style.left = "215px";
-                                handler.classList.remove('close');
-                            } else {
-                                leftBox.style.width = '0';
-                                handler.style.left = "5px";
-                                handler.classList.add('close');
-                            }
-                        });
-                    }
-                    
-                    // 在leftbox加载完成后调用loaduser
-                    if (typeof loaduser === 'function') {
-                        loaduser();
-                    }
-                })
-                .catch(error => console.error('Error loading left-box.html:', error));
-        </script>
-        <div class="right-box">
-            <div class="handler">  </div>
-            <div class="bg"></div>
-            <div class="addbox">  </div>
-            <div class="right-top">
-                
-                <!-- 移动端菜单按钮 -->
-                <div class="menu-button" id="menu-button">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <i class="icon-create"></i>
-                <span>个人博客</span>
-                <span class="right-top-span-2">寻感论剑证道</span>
-                <p><br></p>
+<body class="neo">
+    <div class="neo-container">
+        <div class="neo-sidebar" id="neo-sidebar"></div>
+        <div class="neo-overlay" id="neo-overlay"></div>
+        <div class="neo-menu-btn" id="neo-menu-btn"><span></span><span></span><span></span></div>
+        <div class="neo-main" id="blogMain">
+            <div id="blogHeader" class="neo-page-header">
+                <div class="section-label neo-reveal">◇ Blog</div>
+                <h1 class="neo-reveal neo-reveal-d1">个人博客</h1>
+                <p class="neo-reveal neo-reveal-d2">寻感论剑证道 · 技术与思考</p>
+                <div class="neo-section-line neo-reveal neo-reveal-d2"></div>
             </div>
-            <div class="cardList" >
-
-            </div>
-            <textarea id="$t" style="display:none;">
-                *Blog* not **Found** here.
-            </textarea>
-            <div id="$m" class="markdown-body" style="text-align: left;margin:2%"></div>
+            <div class="cardList neo-card-grid" id="blogCards" style="padding-top:0;"></div>
+            <textarea id="$t" style="display:none;">*Blog* not **Found** here.</textarea>
+            <div id="$m" class="markdown-body neo-article" style="text-align:left;margin:2%;display:none;"></div>
 
 
             <!--                <textarea id="$t" style="display:none">-->
 
 
 
-
+            <div class="neo-footer"><p>© 2026 Buttonwood · 寻感论剑证道</p></div>
         </div>
     </div>
-
+    <link rel="stylesheet" href="css/neo.css">
+    <script src="js/neo.js"></script>
     <script src="js/blog.js"></script>
     <script src="js/router.js"></script>
-    <script>hljs.highlightAll();</script>
+    <script>
+    hljs.highlightAll();
+    fetch('neo-leftbox.html').then(r=>r.text()).then(d=>{
+        document.getElementById('neo-sidebar').innerHTML = d;
+        document.querySelectorAll('.neo-nav li[data-page]').forEach(li=>{
+            if(li.dataset.page==='createIdea') li.classList.add('active');
+        });
+    });
+    // Transform blog cards to neo style
+    setTimeout(()=>{
+        document.querySelectorAll('#blogCards .card-default').forEach((a,i)=>{
+            a.classList.add('neo-card','neo-reveal','neo-reveal-d'+(i%4+1));
+            const icon=a.querySelector('.card-icon');
+            const name=a.querySelector('.card-name');
+            const desc=a.querySelector('.card-des');
+            if(icon){icon.classList.add('neo-card-icon');icon.classList.remove('card-icon','bg-img','round');}
+            if(name){const h3=document.createElement('h3');h3.textContent=name.textContent.trim();name.replaceWith(h3);}
+            if(desc){const p=document.createElement('p');p.textContent=desc.textContent.trim();desc.parentElement.replaceWith(p);}
+            const main=a.querySelector('.card-main');
+            if(main){main.classList.add('neo-card-info');main.classList.remove('card-main');}
+            const card=a.querySelector('.card');
+            if(card){while(card.firstChild){a.insertBefore(card.firstChild,card);}card.remove();}
+        });
+        setTimeout(()=>document.querySelectorAll('#blogCards .neo-card').forEach(el=>el.classList.add('visible')),300);
+    },400);
+    // When viewing an article, style the markdown area and add back button
+    setTimeout(()=>{
+        const md=document.getElementById('$m');
+        if(md && md.style.display!=='none' && md.innerHTML.trim()){
+            md.style.display='block';
+            document.getElementById('blogHeader').style.display='none';
+            document.getElementById('blogCards').style.display='none';
+            // Add back link
+            const back=document.createElement('a');
+            back.href='createIdea.html';back.className='neo-back-btn';
+            back.innerHTML='← 返回博客列表';
+            back.style.cssText='display:inline-flex;align-items:center;gap:6px;color:var(--text-dim);text-decoration:none;font-size:13px;margin-bottom:24px;transition:color .3s;position:relative;z-index:2;';
+            back.onmouseenter=()=>back.style.color='var(--cyan)';
+            back.onmouseleave=()=>back.style.color='var(--text-dim)';
+            md.insertBefore(back,md.firstChild);
+        }
+    },600);
+    </script>
 </body>
 </html>

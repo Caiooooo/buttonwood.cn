@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>颜色转换 - HEX/RGB/HSL | Buttonwood工具集</title>
+    <link rel="shortcut icon" href="../img/logo.png">
+    <style>
+        :root{--bg:#0a0a14;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--cyan:#00e5ff;--text:#e0e0e0;--dim:rgba(255,255,255,0.5)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+        .container{max-width:700px;width:100%}
+        .back{color:var(--dim);text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:6px;margin-bottom:24px;transition:color .3s}
+        .back:hover{color:var(--cyan)}
+        h1{font-size:28px;font-weight:800;margin-bottom:8px}
+        .subtitle{color:var(--dim);font-size:14px;margin-bottom:32px}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+        .preview{width:100%;height:100px;border-radius:12px;margin-bottom:20px;transition:background-color .3s}
+        .row{display:flex;gap:12px;margin-bottom:12px;align-items:center;flex-wrap:wrap}
+        .row label{font-size:12px;color:var(--dim);min-width:50px;text-transform:uppercase;letter-spacing:1px}
+        input[type=text],input[type=number]{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:10px 14px;font-size:14px;font-family:monospace;flex:1;min-width:120px}
+        input[type=number]{width:80px;flex:none}
+        input:focus{outline:none;border-color:var(--cyan)}
+        input[type=color]{width:48px;height:36px;border:1px solid var(--border);border-radius:6px;cursor:pointer;background:transparent;padding:2px}
+        .btn{padding:8px 20px;border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:var(--border);color:var(--text);transition:all .3s}
+        .btn:hover{background:var(--cyan);color:#000}
+        .color-swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+        .swatch{width:36px;height:36px;border-radius:8px;cursor:pointer;border:2px solid transparent;transition:all .2s}
+        .swatch:hover{border-color:#fff;transform:scale(1.15)}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../tools.html" class="back">← 返回工具列表</a>
+        <h1>🎨 颜色转换</h1>
+        <p class="subtitle">HEX / RGB / HSL 颜色空间互转，实时预览</p>
+
+        <div class="card">
+            <div class="preview" id="colorPreview" style="background:#00e5ff"></div>
+            <div class="row">
+                <label>拾色器</label>
+                <input type="color" id="picker" value="#00e5ff" oninput="fromPicker()">
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color:var(--cyan);margin-bottom:12px;">HEX</h3>
+            <div class="row">
+                <label>HEX</label>
+                <input type="text" id="hexInput" value="#00e5ff" oninput="fromHex()" placeholder="#00e5ff">
+                <button class="btn" onclick="copyVal('hexInput')">复制</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color:var(--cyan);margin-bottom:12px;">RGB</h3>
+            <div class="row">
+                <label>R</label><input type="number" id="rInput" value="0" min="0" max="255" oninput="fromRgb()">
+                <label>G</label><input type="number" id="gInput" value="229" min="0" max="255" oninput="fromRgb()">
+                <label>B</label><input type="number" id="bInput" value="255" min="0" max="255" oninput="fromRgb()">
+            </div>
+            <div class="row">
+                <label>RGB</label>
+                <input type="text" id="rgbText" value="rgb(0, 229, 255)" readonly>
+                <button class="btn" onclick="copyVal('rgbText')">复制</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="color:var(--cyan);margin-bottom:12px;">HSL</h3>
+            <div class="row">
+                <label>H°</label><input type="number" id="hInput" value="186" min="0" max="360" oninput="fromHsl()">
+                <label>S%</label><input type="number" id="sInput" value="100" min="0" max="100" oninput="fromHsl()">
+                <label>L%</label><input type="number" id="lInput" value="50" min="0" max="100" oninput="fromHsl()">
+            </div>
+            <div class="row">
+                <label>HSL</label>
+                <input type="text" id="hslText" value="hsl(186, 100%, 50%)" readonly>
+                <button class="btn" onclick="copyVal('hslText')">复制</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>快捷颜色</h3>
+            <div class="color-swatches" id="swatches"></div>
+        </div>
+    </div>
+
+    <script>
+    const picker=document.getElementById('picker');
+    const preview=document.getElementById('colorPreview');
+    const hexInput=document.getElementById('hexInput');
+    const rInput=document.getElementById('rInput'),gInput=document.getElementById('gInput'),bInput=document.getElementById('bInput');
+    const hInput=document.getElementById('hInput'),sInput=document.getElementById('sInput'),lInput=document.getElementById('lInput');
+    const rgbText=document.getElementById('rgbText'),hslText=document.getElementById('hslText');
+
+    function hexToRgb(h){const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);return r?[parseInt(r[1],16),parseInt(r[2],16),parseInt(r[3],16)]:[0,0,0]}
+    function rgbToHex(r,g,b){return'#'+[r,g,b].map(x=>{const h=x.toString(16);return h.length===1?'0'+h:h}).join('')}
+    function rgbToHsl(r,g,b){r/=255;g/=255;b/=255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h=0,s,l=(max+min)/2;if(max!==min){const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);switch(max){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break}}return[Math.round(h*360),Math.round(s*100),Math.round(l*100)]}
+    function hslToRgb(h,s,l){s/=100;l/=100;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h/30)%12;return l-a*Math.max(Math.min(k-3,9-k,1),-1)};return[Math.round(f(0)*255),Math.round(f(8)*255),Math.round(f(4)*255)]}
+
+    function updateAll(r,g,b){
+        rInput.value=r;gInput.value=g;bInput.value=b;
+        const hex=rgbToHex(r,g,b);hexInput.value=hex;picker.value=hex;preview.style.background=hex;
+        rgbText.value=`rgb(${r}, ${g}, ${b})`;
+        const[h,s,l]=rgbToHsl(r,g,b);hInput.value=h;sInput.value=s;lInput.value=l;
+        hslText.value=`hsl(${h}, ${s}%, ${l}%)`;
+    }
+
+    function fromPicker(){const v=picker.value;hexInput.value=v;const[r,g,b]=hexToRgb(v);updateAll(r,g,b)}
+    function fromHex(){const v=hexInput.value;if(!/^#?[a-f\d]{6}$/i.test(v))return;const[r,g,b]=hexToRgb(v);updateAll(r,g,b)}
+    function fromRgb(){updateAll(+rInput.value||0,+gInput.value||0,+bInput.value||0)}
+    function fromHsl(){const[r,g,b]=hslToRgb(+hInput.value||0,+sInput.value||0,+lInput.value||0);updateAll(r,g,b)}
+    function copyVal(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.value).then(()=>{const t=el.value;el.value='已复制!';setTimeout(()=>el.value=t,1000)})}
+
+    // Quick swatches
+    const colors=['#00e5ff','#b44dff','#ff4081','#ffd740','#69f0ae','#ff6e40','#448aff','#e040fb','#00e676','#ffab00','#ff1744','#18ffff'];
+    const swatches=document.getElementById('swatches');
+    colors.forEach(c=>{const d=document.createElement('div');d.className='swatch';d.style.background=c;d.title=c;d.onclick=()=>{picker.value=c;fromPicker()};swatches.appendChild(d)});
+    </script>
+</body>
+</html>

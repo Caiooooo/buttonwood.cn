@@ -60,181 +60,727 @@
 </head>
 
 <body id="home">
+    <style>
+        /* ========== HOMEPAGE 2.0 — IMMERSIVE DIGITAL UNIVERSE ========== */
+        :root {
+            --bg-deep: #06060e;
+            --bg-card: rgba(255,255,255,0.03);
+            --cyan: #00e5ff;
+            --purple: #b44dff;
+            --gold: #ffd740;
+            --pink: #ff4081;
+            --text: #e0e0e0;
+            --text-dim: rgba(255,255,255,0.45);
+            --glass-border: rgba(255,255,255,0.08);
+        }
+
+        #home { background: #06060e !important; overflow: hidden; }
+        #home .right-box { background: transparent !important; overflow-y: auto !important; scroll-behavior: smooth; scroll-snap-type: y proximity; }
+        #home .right-box::-webkit-scrollbar { width: 4px; }
+        #home .right-box::-webkit-scrollbar-track { background: transparent; }
+        #home .right-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+        /* ---- Canvas Particle Layer ---- */
+        #particleCanvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ---- Custom Cursor ---- */
+        #customCursor {
+            position: fixed; pointer-events: none; z-index: 9999;
+            width: 24px; height: 24px;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            transform: translate(-50%,-50%);
+            transition: width 0.2s, height 0.2s, border-color 0.3s;
+            mix-blend-mode: difference;
+        }
+        #customCursor::after {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 4px; height: 4px; background: var(--cyan);
+            border-radius: 50%; transform: translate(-50%,-50%);
+        }
+        #cursorTrail {
+            position: fixed; pointer-events: none; z-index: 9998;
+            width: 80px; height: 80px;
+            background: radial-gradient(circle, rgba(0,229,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%,-50%);
+        }
+
+        /* ---- Hero Section ---- */
+        .hero-section {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 2; scroll-snap-align: start;
+            flex-direction: column; padding: 0 40px;
+        }
+        .hero-glow {
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(180,77,255,0.12) 0%, transparent 70%);
+            top: 50%; left: 50%; transform: translate(-50%,-50%);
+            animation: glowPulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes glowPulse {
+            0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.6; }
+            50% { transform: translate(-50%,-50%) scale(1.3); opacity: 1; }
+        }
+        .hero-orb {
+            position: absolute; border-radius: 50%; pointer-events: none;
+            filter: blur(60px); opacity: 0.3;
+        }
+        .hero-orb:nth-child(1) { width: 300px; height: 300px; background: var(--cyan); top: 15%; left: 10%; animation: floatOrb 8s ease-in-out infinite; }
+        .hero-orb:nth-child(2) { width: 200px; height: 200px; background: var(--purple); bottom: 20%; right: 15%; animation: floatOrb 6s ease-in-out infinite reverse; }
+        .hero-orb:nth-child(3) { width: 150px; height: 150px; background: var(--pink); top: 60%; left: 60%; animation: floatOrb 10s ease-in-out infinite 2s; }
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            25% { transform: translate(40px,-30px) scale(1.2); }
+            50% { transform: translate(-20px,20px) scale(0.9); }
+            75% { transform: translate(-30px,-10px) scale(1.1); }
+        }
+
+        .hero-content { position: relative; z-index: 3; text-align: center; max-width: 800px; }
+        .hero-badge {
+            display: inline-block; padding: 6px 18px;
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 50px;
+            font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--text-dim); margin-bottom: 30px;
+            backdrop-filter: blur(10px); background: rgba(255,255,255,0.03);
+        }
+        .hero-title {
+            font-size: clamp(42px, 8vw, 90px); font-weight: 900;
+            line-height: 1.05; margin: 0 0 16px 0;
+            background: linear-gradient(135deg, #fff 0%, var(--cyan) 40%, var(--purple) 70%, #fff 100%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease infinite;
+            position: relative;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .hero-title.glitch {
+            animation: gradientShift 6s ease infinite, glitchSkew 3s ease-in-out infinite;
+        }
+        @keyframes glitchSkew {
+            0%, 90%, 100% { transform: skew(0deg); }
+            92% { transform: skew(2deg, 1deg); }
+            94% { transform: skew(-2deg, -1deg); }
+            96% { transform: skew(1deg, -0.5deg); }
+            98% { transform: skew(0deg); }
+        }
+        .hero-subtitle {
+            font-size: clamp(16px, 2.5vw, 20px); color: var(--text-dim);
+            font-weight: 300; margin-bottom: 8px; min-height: 28px;
+        }
+        .hero-subtitle .cursor-blink {
+            display: inline-block; width: 2px; height: 1.1em;
+            background: var(--cyan); margin-left: 4px; vertical-align: text-bottom;
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        .hero-desc {
+            font-size: 14px; color: rgba(255,255,255,0.35); max-width: 520px;
+            margin: 20px auto 40px; line-height: 1.7;
+        }
+        .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary, .btn-ghost {
+            padding: 14px 36px; border-radius: 60px; font-size: 14px;
+            letter-spacing: 1px; text-decoration: none; cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.25,0.8,0.25,1.2);
+            font-weight: 600; position: relative; overflow: hidden;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            color: #fff; border: none;
+            box-shadow: 0 4px 25px rgba(0,229,255,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(0,229,255,0.5);
+        }
+        .btn-ghost {
+            background: transparent; color: #fff;
+            border: 1.5px solid rgba(255,255,255,0.25);
+            backdrop-filter: blur(5px);
+        }
+        .btn-ghost:hover {
+            border-color: var(--cyan); color: var(--cyan);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 20px rgba(0,229,255,0.15);
+        }
+
+        /* ---- Scroll Indicator ---- */
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            z-index: 3; cursor: pointer;
+        }
+        .scroll-indicator span { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase; }
+        .scroll-mouse {
+            width: 24px; height: 38px; border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 14px; position: relative;
+        }
+        .scroll-mouse::after {
+            content: ''; position: absolute; top: 6px; left: 50%;
+            width: 4px; height: 8px; background: var(--cyan);
+            border-radius: 2px; transform: translateX(-50%);
+            animation: scrollWheel 1.8s ease-in-out infinite;
+        }
+        @keyframes scrollWheel {
+            0% { top: 6px; opacity: 1; }
+            50% { top: 18px; opacity: 0.3; }
+            100% { top: 6px; opacity: 1; }
+        }
+
+        /* ---- Section Common ---- */
+        .page-section {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 2; scroll-snap-align: start;
+            padding: 80px 40px; flex-direction: column;
+        }
+        .section-label {
+            font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+            color: var(--cyan); margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: clamp(28px, 5vw, 48px); font-weight: 800;
+            color: #fff; margin: 0 0 16px 0; text-align: center;
+        }
+        .section-line {
+            width: 60px; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--purple));
+            border-radius: 2px; margin: 0 auto 40px;
+        }
+
+        /* ---- About Section ---- */
+        .about-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px; max-width: 1000px; width: 100%;
+        }
+        .glass-card {
+            background: var(--bg-card); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 20px;
+            padding: 36px 28px; transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
+            position: relative; overflow: hidden;
+        }
+        .glass-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transition: left 0.6s;
+        }
+        .glass-card:hover::before { left: 100%; }
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(180,77,255,0.08);
+        }
+        .glass-card .card-icon-large {
+            font-size: 40px; margin-bottom: 16px;
+        }
+        .glass-card h3 { color: #fff; font-size: 18px; margin: 0 0 10px; font-weight: 700; }
+        .glass-card p { color: var(--text-dim); font-size: 13px; line-height: 1.6; margin: 0; }
+
+        /* ---- Skills Tags ---- */
+        .skills-cloud { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 700px; margin-top: 20px; }
+        .skill-tag {
+            padding: 8px 18px; border-radius: 30px; font-size: 13px;
+            border: 1px solid rgba(255,255,255,0.12); color: var(--text-dim);
+            background: rgba(255,255,255,0.02); transition: all 0.3s;
+            cursor: default;
+        }
+        .skill-tag:hover {
+            border-color: var(--cyan); color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0,229,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        /* ---- Projects Preview ---- */
+        .projects-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px; max-width: 1100px; width: 100%;
+        }
+        .project-card {
+            background: var(--bg-card); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 20px;
+            padding: 0; overflow: hidden; transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
+            cursor: pointer; text-decoration: none; display: block;
+            transform-style: preserve-3d; perspective: 1000px;
+        }
+        .project-card:hover {
+            transform: translateY(-12px) rotateX(2deg);
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,229,255,0.06);
+        }
+        .project-card-inner { padding: 32px 28px; }
+        .project-card .proj-lang {
+            display: inline-block; padding: 3px 12px; border-radius: 20px;
+            font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+            margin-bottom: 16px; font-weight: 600;
+        }
+        .lang-rust { background: rgba(222,165,132,0.15); color: #dea584; }
+        .lang-python { background: rgba(53,114,162,0.15); color: #4b9fd6; }
+        .lang-java { background: rgba(231,111,0,0.15); color: #f89820; }
+        .lang-ml { background: rgba(243,118,38,0.15); color: #f37626; }
+        .project-card h4 { color: #fff; font-size: 20px; margin: 0 0 8px; font-weight: 700; }
+        .project-card p { color: var(--text-dim); font-size: 13px; line-height: 1.5; margin: 0; }
+        .project-card .proj-stats {
+            display: flex; gap: 16px; margin-top: 16px; font-size: 12px; color: rgba(255,255,255,0.3);
+        }
+
+        /* ---- Stats Row ---- */
+        .stats-row {
+            display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;
+            margin-top: 30px;
+        }
+        .stat-item { text-align: center; }
+        .stat-number {
+            font-size: clamp(32px, 6vw, 56px); font-weight: 900;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stat-label { font-size: 12px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+
+        /* ---- Footer ---- */
+        .footer-section {
+            min-height: 40vh; display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 2; scroll-snap-align: start;
+            flex-direction: column; padding: 60px 40px; text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .footer-section .social-links { display: flex; gap: 20px; margin: 24px 0; }
+        .footer-section .social-links a {
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.12); display: flex;
+            align-items: center; justify-content: center; color: var(--text-dim);
+            transition: all 0.3s; text-decoration: none; font-size: 18px;
+        }
+        .footer-section .social-links a:hover {
+            border-color: var(--cyan); color: var(--cyan);
+            box-shadow: 0 0 25px rgba(0,229,255,0.2);
+        }
+        .footer-copy { font-size: 11px; color: rgba(255,255,255,0.2); margin-top: 16px; }
+
+        /* ---- Reveal Animations ---- */
+        .reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25,0.8,0.25,1);
+        }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* ---- Mobile ---- */
+        @media (max-width: 768px) {
+            #customCursor, #cursorTrail { display: none; }
+            .hero-section, .page-section { padding: 60px 20px; }
+            .hero-title { font-size: 36px; }
+            .about-grid, .projects-grid { grid-template-columns: 1fr; }
+            .stats-row { gap: 24px; }
+        }
+    </style>
+
     <div class="container">
-        <!--        侧边栏目    -->
-
-        <!-- 在页面中加入一个容器 -->
+        <!-- 侧边栏 -->
         <div class="left-box" id="left-box"></div>
-        <script>
-            // 检测是否为移动设备
-            function isMobileDevice() {
-                return window.innerWidth / window.innerHeight < 1.2; // 使用宽高比来判断，小于1.2认为是移动设备
-            }
 
-            // 设置左侧栏宽度
-            function setLeftBoxWidth() {
-                const leftBox = document.getElementById('left-box');
-                const handler = document.querySelector('.handler');
-                const containerWidth = document.querySelector('.container').offsetWidth;
-                const menuButton = document.getElementById('menu-button');
+        <!-- Canvas 粒子背景 -->
+        <canvas id="particleCanvas"></canvas>
 
-                if (isMobileDevice()) {
-                    leftBox.style.width = '0';
-                    handler.style.left = "5px";
-                    handler.classList.add('close');
-                    menuButton.style.display = 'block';
-                } else {
-                    // 使用容器宽度的20%作为侧边栏宽度，最小210px
-                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
-                    leftBox.style.width = sidebarWidth + 'px';
-                    handler.style.left = (sidebarWidth + 5) + "px";
-                    handler.classList.remove('close');
-                    menuButton.style.display = 'none';
-                }
-            }
+        <!-- 自定义光标 -->
+        <div id="customCursor"></div>
+        <div id="cursorTrail"></div>
 
-            // 使用 JavaScript 动态加载 left-box.html
-            fetch('leftbox.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('left-box').innerHTML = data;
-                    const items = document.querySelectorAll('.item');
-                    items[0].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+        <!-- 主内容区域 -->
+        <div class="right-box" style="background:transparent !important;">
 
-                    // 初始设置宽度
-                    setLeftBoxWidth();
-
-                    // 监听窗口大小变化
-                    window.addEventListener('resize', setLeftBoxWidth);
-
-                    // 添加菜单按钮点击事件
-                    const leftBox = document.getElementById('left-box');
-                    const handler = document.querySelector('.handler');
-
-                    const menuButton = document.getElementById('menu-button');
-                    menuButton.addEventListener('click', function () {
-                        this.classList.toggle('active');
-                        if (leftBox.style.width === '0px') {
-                            leftBox.style.width = '210px';
-                            handler.style.left = "215px";
-                            handler.classList.remove('close');
-                        } else {
-                            leftBox.style.width = '0';
-                            handler.style.left = "5px";
-                            handler.classList.add('close');
-                        }
-                    });
-                })
-                .catch(error => console.error('Error loading left-box.html:', error));
-        </script>
-
-
-        <div class="right-box" style="background:none;overflow-y: hidden;">
-            <!-- 移动端菜单按钮移到这里 -->
-            <div class="right-top" style="background: none;border: none;">
+            <!-- 移动端菜单按钮 -->
+            <div class="right-top" style="background:none;border:none;position:fixed;top:0;right:0;z-index:100;width:auto;">
                 <div class="menu-button" id="menu-button">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span><span></span>
                 </div>
             </div>
-            <div id="container">
-                <video id="background_video" loop muted></video>
-                <div id="video_cover"></div>
-                <div id="overlay"></div>
 
-                <section id="main_content">
-                    <div id="head">
-                        <h1 style="font-family: fa;font-size: 300%;font-weight: 300;">
-                            <img src="img/whitelogo.png" style="width: 100px; margin-bottom: -30px;" id="logo-img">
-                            寻声
-                        </h1>
-                        <p class="sub_head">Buttonwood的量化交易博客</p>
-                        <p class="info">
-                            欢迎来到Buttonwood的量化交易博客，这里专注分享币圈量化策略、区块链技术、DeFi协议开发等专业内容。Buttonwood致力于通过技术创新推动加密货币投资的智能化，欢迎探索交流。
-                        </p>
+            <!-- ===== HERO ===== -->
+            <section class="hero-section" id="hero">
+                <div class="hero-orb"></div>
+                <div class="hero-orb"></div>
+                <div class="hero-orb"></div>
+                <div class="hero-glow"></div>
+                <div class="hero-content">
+                    <div class="hero-badge reveal">✦ Quant · DeFi · Blockchain</div>
+                    <h1 class="hero-title glitch reveal reveal-delay-1">寻 声</h1>
+                    <p class="hero-subtitle reveal reveal-delay-2">
+                        <span id="typingText"></span><span class="cursor-blink"></span>
+                    </p>
+                    <p class="hero-desc reveal reveal-delay-3">
+                        打破第四面墙，探索量化交易、区块链技术与DeFi协议的无限可能。
+                        以代码为刃，以数据为盾，在加密世界的浪潮中寻找alpha。
+                    </p>
+                    <div class="hero-actions reveal reveal-delay-4">
+                        <a href="designIdea.html" class="btn-primary">✦ 开始探索</a>
+                        <a href="createIdea.html" class="btn-ghost">阅读博客 →</a>
                     </div>
+                </div>
+                <div class="scroll-indicator" onclick="document.querySelector('#about').scrollIntoView({behavior:'smooth'})">
+                    <div class="scroll-mouse"></div>
+                    <span>Scroll</span>
+                </div>
+            </section>
 
-                    <div id="links">
-                        <a href="designIdea.html">开始探索</a>
-                        <a href="createIdea.html">查看博客</a>
+            <!-- ===== ABOUT ===== -->
+            <section class="page-section" id="about">
+                <div class="section-label reveal">About</div>
+                <h2 class="section-title reveal reveal-delay-1">关于我</h2>
+                <div class="section-line reveal reveal-delay-1"></div>
+                <div class="about-grid">
+                    <div class="glass-card reveal reveal-delay-2">
+                        <div class="card-icon-large">⚡</div>
+                        <h3>量化交易</h3>
+                        <p>专注于加密货币高频交易策略研发，从Polymarket预测市场到CEX/DEX套利，用Rust与Python构建低延迟交易系统。</p>
                     </div>
-                </section>
-            </div>
-            <div class="handler"> </div>
+                    <div class="glass-card reveal reveal-delay-3">
+                        <div class="card-icon-large">🔗</div>
+                        <h3>区块链开发</h3>
+                        <p>深入智能合约、DeFi协议与链上数据分析。探索MEV、流动性挖矿与去中心化交易的底层逻辑。</p>
+                    </div>
+                    <div class="glass-card reveal reveal-delay-4">
+                        <div class="card-icon-large">💻</div>
+                        <h3>全栈工程</h3>
+                        <p>从Rust高性能后端到Android移动开发，享受用优雅的代码解决复杂问题的乐趣。</p>
+                    </div>
+                </div>
+                <div class="skills-cloud reveal">
+                    <span class="skill-tag">Rust</span><span class="skill-tag">Python</span>
+                    <span class="skill-tag">Java</span><span class="skill-tag">C++</span>
+                    <span class="skill-tag">Solidity</span><span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">React</span><span class="skill-tag">Spring Boot</span>
+                    <span class="skill-tag">Android</span><span class="skill-tag">ML/DL</span>
+                    <span class="skill-tag">WebSocket</span><span class="skill-tag">Docker</span>
+                </div>
+            </section>
+
+            <!-- ===== PROJECTS ===== -->
+            <section class="page-section" id="projects">
+                <div class="section-label reveal">Featured</div>
+                <h2 class="section-title reveal reveal-delay-1">精选项目</h2>
+                <div class="section-line reveal reveal-delay-1"></div>
+                <div class="projects-grid">
+                    <a href="https://github.com/Caiooooo/zilean" target="_blank" class="project-card reveal reveal-delay-2">
+                        <div class="project-card-inner">
+                            <span class="proj-lang lang-rust">Rust</span>
+                            <h4>Zilean</h4>
+                            <p>高性能Tick级别HFT回测引擎，支持订单簿重建与策略模拟</p>
+                            <div class="proj-stats">⭐ 12 &nbsp;·&nbsp; 🔀 7</div>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Caiooooo/polymarket-l2-collector" target="_blank" class="project-card reveal reveal-delay-3">
+                        <div class="project-card-inner">
+                            <span class="proj-lang lang-python">Python</span>
+                            <h4>Polymarket L2 Collector</h4>
+                            <p>Polymarket高频L2订单簿采集器，WebSocket实时订阅+量化回测</p>
+                            <div class="proj-stats">⭐ 1 &nbsp;·&nbsp; 🐍 97.1%</div>
+                        </div>
+                    </a>
+                    <a href="https://github.com/Caiooooo/Coloring-for-line-drawings" target="_blank" class="project-card reveal reveal-delay-4">
+                        <div class="project-card-inner">
+                            <span class="proj-lang lang-ml">ML / CV</span>
+                            <h4>线稿自动上色</h4>
+                            <p>基于深度学习的线稿自动上色，NY团队合作项目</p>
+                            <div class="proj-stats">⭐ 3 &nbsp;·&nbsp; 🔀 1</div>
+                        </div>
+                    </a>
+                </div>
+                <a href="projects.html" class="btn-ghost reveal" style="margin-top:40px;display:inline-block;">查看全部项目 →</a>
+            </section>
+
+            <!-- ===== STATS ===== -->
+            <section class="page-section" id="stats" style="min-height:50vh;">
+                <div class="section-label reveal">Stats</div>
+                <div class="stats-row reveal">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="12">0</div>
+                        <div class="stat-label">开源项目</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="25">0</div>
+                        <div class="stat-label">技术博客</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="5">0</div>
+                        <div class="stat-label">技术栈</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== FOOTER ===== -->
+            <footer class="footer-section">
+                <h3 style="color:#fff;font-size:24px;margin:0;">寻 声</h3>
+                <p style="color:var(--text-dim);font-size:13px;">打破第四面墙 · 探索技术与金融的交汇</p>
+                <div class="social-links">
+                    <a href="https://github.com/Caiooooo" target="_blank" title="GitHub">GH</a>
+                    <a href="mailto:hi@buttonwood.cn" title="Email">@</a>
+                    <a href="https://buttonwood.cn" title="Blog">B</a>
+                </div>
+                <p class="footer-copy">© 2026 Buttonwood · Built with ❤️ and ☕</p>
+            </footer>
+
+            <div class="handler"></div>
         </div>
     </div>
 
     <script src="js/reg.js"></script>
     <script src="js/bideo.js"></script>
     <script src="js/router.js"></script>
-    <script>
-        function handleMobileLayout() {
-            const container = document.getElementById('container');
-            const video = document.getElementById('background_video');
-            const videoCover = document.getElementById('video_cover');
-            const overlay = document.getElementById('overlay');
-            const mainContent = document.getElementById('main_content');
-            const logoImg = document.getElementById('logo-img');
 
-            if (isMobileDevice()) {
-                // 移动端样式
-                container.style.background = '#F8F8FF';
-                video.style.display = 'none';
-                videoCover.style.display = 'none';
-                overlay.style.display = 'none';
-                mainContent.style.color = '#000';
-                document.querySelectorAll('#main_content h1, #main_content .sub_head, #main_content .info')
-                    .forEach(el => el.style.color = '#000');
-                document.querySelectorAll('#links a')
-                    .forEach(el => {
-                        el.style.color = '#000';
-                        el.style.borderColor = '#000';
-                    });
-                logoImg.src = 'img/logo.png'; // 切换为深色logo
-            } else {
-                // 桌面端样式
-                container.style.background = 'none';
-                video.style.display = 'block';
-                videoCover.style.display = 'block';
-                overlay.style.display = 'block';
-                mainContent.style.color = '#fff';
-                document.querySelectorAll('#main_content h1, #main_content .sub_head, #main_content .info')
-                    .forEach(el => el.style.color = '#fff');
-                document.querySelectorAll('#links a')
-                    .forEach(el => {
-                        el.style.color = '#fff';
-                        el.style.borderColor = 'rgba(255, 255, 255, 0.20)';
-                    });
-                logoImg.src = 'img/whitelogo.png'; // 切换回白色logo
+    <script>
+    // ============ PARTICLE SYSTEM ============
+    (function() {
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let W, H, particles = [], mouse = { x: -999, y: -999 };
+        const PARTICLE_COUNT = 120;
+
+        function resize() {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.reset(); this.y = Math.random() * H; }
+            reset() {
+                this.x = Math.random() * W; this.y = -10;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = Math.random() * 0.3 + 0.1;
+                this.r = Math.random() * 1.5 + 0.5;
+                this.alpha = Math.random() * 0.5 + 0.3;
+            }
+            update() {
+                // Mouse interaction
+                const dx = mouse.x - this.x, dy = mouse.y - this.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 150 && dist > 0) {
+                    const force = (150 - dist) / 150 * 0.03;
+                    this.vx -= (dx / dist) * force;
+                    this.vy -= (dy / dist) * force;
+                }
+                this.vx *= 0.999; this.vy *= 0.999;
+                this.x += this.vx; this.y += this.vy;
+                if (this.y > H + 10 || this.x < -50 || this.x > W + 50) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(180,220,255,${this.alpha})`;
+                ctx.fill();
             }
         }
 
-        // 初始化时执行
-        handleMobileLayout();
-        // 监听窗口大小变化
-        window.addEventListener('resize', handleMobileLayout);
-    </script>
-    <script>
-        function getQueryParam(name) {
-            const url = window.location.search;
-            const params = new URLSearchParams(url);
-            return params.get(name);
-        }
-        function setUserInfoFromQuery() {
-            const userName = getQueryParam('userName');
-            if (userName) {
-                // 修改左下角用户名
-                const userNameElem = document.getElementById('userName');
-                if (userNameElem) userNameElem.textContent = userName;
-                // 修改头像，强制刷新防缓存
-                const userAvatarElem = document.getElementById('userPhoto') || document.querySelector('.user-info img');
-                if (userAvatarElem) userAvatarElem.src = '/img/userAvatar/' + userName + '.jpg?t=' + Date.now();
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function () {
-            setTimeout(setUserInfoFromQuery, 500);
+        for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+        const rightBox = document.querySelector('.right-box');
+        rightBox.addEventListener('mousemove', e => {
+            const rect = rightBox.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left;
+            mouse.y = e.clientY + rightBox.scrollTop - rect.top;
         });
+        rightBox.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+
+        function drawLines() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(180,220,255,${0.08 * (1 - dist/100)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, W, H);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawLines();
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+
+    // ============ CUSTOM CURSOR ============
+    (function() {
+        const cursor = document.getElementById('customCursor');
+        const trail = document.getElementById('cursorTrail');
+        let cx = -100, cy = -100, tx = -100, ty = -100;
+        const rightBox = document.querySelector('.right-box');
+
+        rightBox.addEventListener('mousemove', e => {
+            const rect = rightBox.getBoundingClientRect();
+            tx = e.clientX; ty = e.clientY;
+        });
+        rightBox.addEventListener('mouseleave', () => { cursor.style.opacity = '0'; trail.style.opacity = '0'; });
+        rightBox.addEventListener('mouseenter', () => { cursor.style.opacity = '1'; trail.style.opacity = '1'; });
+
+        document.querySelectorAll('a, button, .project-card, .glass-card, .skill-tag, .btn-primary, .btn-ghost, .scroll-indicator')
+            .forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.width = '48px'; cursor.style.height = '48px';
+                    cursor.style.borderColor = 'var(--purple)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.width = '24px'; cursor.style.height = '24px';
+                    cursor.style.borderColor = 'var(--cyan)';
+                });
+            });
+
+        function followCursor() {
+            cx += (tx - cx) * 0.12;
+            cy += (ty - cy) * 0.12;
+            cursor.style.left = cx + 'px';
+            cursor.style.top = cy + 'px';
+            trail.style.left = tx + 'px';
+            trail.style.top = ty + 'px';
+            requestAnimationFrame(followCursor);
+        }
+        followCursor();
+    })();
+
+    // ============ TYPING EFFECT ============
+    (function() {
+        const texts = [
+            'Buttonwood 的量化交易博客',
+            '探索 DeFi 与区块链技术',
+            '用代码寻找加密世界的 Alpha',
+            'Building HFT engines in Rust',
+            '打破第四面墙 ✦'
+        ];
+        let txtIdx = 0, charIdx = 0, isDeleting = false;
+        const el = document.getElementById('typingText');
+
+        function type() {
+            const current = texts[txtIdx];
+            if (isDeleting) {
+                el.textContent = current.substring(0, charIdx - 1);
+                charIdx--;
+            } else {
+                el.textContent = current.substring(0, charIdx + 1);
+                charIdx++;
+            }
+            let speed = isDeleting ? 30 : 60 + Math.random() * 30;
+            if (!isDeleting && charIdx === current.length) {
+                speed = 2000; isDeleting = true;
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false; txtIdx = (txtIdx + 1) % texts.length;
+                speed = 400;
+            }
+            setTimeout(type, speed);
+        }
+        type();
+    })();
+
+    // ============ SCROLL REVEAL + COUNTER ============
+    (function() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Animate counters
+                    const counters = entry.target.querySelectorAll('.stat-number[data-count]');
+                    counters.forEach(c => {
+                        const target = +c.getAttribute('data-count');
+                        if (c.dataset.animated) return;
+                        c.dataset.animated = '1';
+                        let cur = 0;
+                        const step = () => {
+                            cur += Math.ceil(target / 30);
+                            if (cur >= target) { c.textContent = target; return; }
+                            c.textContent = cur;
+                            requestAnimationFrame(step);
+                        };
+                        step();
+                    });
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    })();
+
+    // ============ SIDEBAR + MOBILE ============
+    (function() {
+        function isMobileDevice() {
+            return window.innerWidth / window.innerHeight < 1.2;
+        }
+        function setLeftBoxWidth() {
+            const leftBox = document.getElementById('left-box');
+            const handler = document.querySelector('.handler');
+            const menuButton = document.getElementById('menu-button');
+            if (!leftBox) return;
+            if (isMobileDevice()) {
+                leftBox.style.width = '0';
+                if (handler) { handler.style.left = '5px'; handler.classList.add('close'); }
+                if (menuButton) menuButton.style.display = 'block';
+            } else {
+                leftBox.style.width = '210px';
+                if (handler) { handler.style.left = '215px'; handler.classList.remove('close'); }
+                if (menuButton) menuButton.style.display = 'none';
+            }
+        }
+
+        fetch('leftbox.html')
+            .then(r => r.text())
+            .then(data => {
+                const lb = document.getElementById('left-box');
+                lb.innerHTML = data;
+                const items = document.querySelectorAll('.item');
+                if (items[0]) items[0].style.backgroundColor = 'rgba(255,255,255,0.2)';
+                setLeftBoxWidth();
+                window.addEventListener('resize', setLeftBoxWidth);
+
+                const menuBtn = document.getElementById('menu-button');
+                const handler = document.querySelector('.handler');
+                if (menuBtn) {
+                    menuBtn.addEventListener('click', function() {
+                        this.classList.toggle('active');
+                        if (lb.style.width === '0px') {
+                            lb.style.width = '210px';
+                            if (handler) { handler.style.left = '215px'; handler.classList.remove('close'); }
+                        } else {
+                            lb.style.width = '0';
+                            if (handler) { handler.style.left = '5px'; handler.classList.add('close'); }
+                        }
+                    });
+                }
+            })
+            .catch(e => console.error('leftbox load error:', e));
+
+        // Query param user info
+        function getQueryParam(n) { return new URLSearchParams(window.location.search).get(n); }
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const un = getQueryParam('userName');
+                if (un) {
+                    const ne = document.getElementById('userName');
+                    if (ne) ne.textContent = un;
+                    const ae = document.getElementById('userPhoto') || document.querySelector('.user-info img');
+                    if (ae) ae.src = '/img/userAvatar/' + un + '.jpg?t=' + Date.now();
+                }
+            }, 500);
+        });
+    })();
     </script>
 </body>
 

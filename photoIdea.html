@@ -19,94 +19,14 @@
         crossorigin="anonymous"></script>
 </head>
 
-<body onload="chk(),loaduser()" id="home">
-    <div class="container">
-
-        <div class="left-box" id="left-box"></div>
-        <script>
-            // 检测是否为移动设备
-            function isMobileDevice() {
-                return window.innerWidth / window.innerHeight < 1.2; // 使用宽高比来判断，小于1.2认为是移动设备
-            }
-
-            // 设置左侧栏宽度
-            function setLeftBoxWidth() {
-                const leftBox = document.getElementById('left-box');
-                const handler = document.querySelector('.handler');
-                const containerWidth = document.querySelector('.container').offsetWidth;
-                const menuButton = document.getElementById('menu-button');
-
-                if (isMobileDevice()) {
-                    leftBox.style.width = '0';
-                    handler.style.left = "5px";
-                    handler.classList.add('close');
-                    menuButton.style.display = 'block';
-                    document.querySelector(".right-top-span-2").style.display = 'none';
-                } else {
-                    // 使用容器宽度的20%作为侧边栏宽度，最小210px
-                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
-                    leftBox.style.width = sidebarWidth + 'px';
-                    handler.style.left = (sidebarWidth + 5) + "px";
-                    handler.classList.remove('close');
-                    menuButton.style.display = 'none';
-                }
-            }
-
-            // 使用 JavaScript 动态加载 left-box.html
-            fetch('leftbox.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('left-box').innerHTML = data;
-                    const items = document.querySelectorAll('.item');
-                    items[3].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-
-                    // 初始设置宽度
-                    setLeftBoxWidth();
-
-                    // 监听窗口大小变化
-                    window.addEventListener('resize', setLeftBoxWidth);
-
-                    // 添加菜单按钮点击事件
-                    const menuButton = document.getElementById('menu-button');
-                    const leftBox = document.getElementById('left-box');
-                    const handler = document.querySelector('.handler');
-
-                    menuButton.addEventListener('click', function () {
-                        this.classList.toggle('active');
-                        if (leftBox.style.width === '0px') {
-                            leftBox.style.width = '210px';
-                            handler.style.left = "215px";
-                            handler.classList.remove('close');
-                        } else {
-                            leftBox.style.width = '0';
-                            handler.style.left = "5px";
-                            handler.classList.add('close');
-                        }
-                    });
-                })
-                .catch(error => console.error('Error loading left-box.html:', error));
-        </script>
-        <div class="right-box">
-            <div class="right-top">
-
-                <!-- 移动端菜单按钮 -->
-                <div class="menu-button" id="menu-button">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <i class="icon-photo"></i>
-                <span>足迹地图</span>
-                <span class="right-top-span-2">记录美好生活</span>
-                <p><br></p>
-            </div>
-            <div class="cardList" style="
-                            flex: 1;
-                            display: flex;
-                            align-items: stretch; /* Ensures the content fills the space */
-                        ">
-
-                <div id="china-map" style="width: 100%;height:100%;"></div>
+<body class="neo">
+    <div class="neo-container">
+        <div class="neo-sidebar" id="neo-sidebar"></div>
+        <div class="neo-overlay" id="neo-overlay"></div>
+        <div class="neo-menu-btn" id="neo-menu-btn"><span></span><span></span><span></span></div>
+        <div class="neo-main">
+            <div class="neo-map-wrap" style="padding:0;">
+                <div id="china-map" style="width:100%;height:100vh;"></div>
                 <script src="js/china-map.js"></script>
                 <script>
                     function getQueryParam(name) {
@@ -130,9 +50,11 @@
                     function renderChinaMap(mapData) {
                         var chinaMap = echarts.init(document.getElementById("china-map"));
                         window.onresize = chinaMap.resize;
-                        const leftBox = document.getElementById("left-box");
-                        const resizeObserver = new ResizeObserver(() => { chinaMap.resize(); });
-                        resizeObserver.observe(leftBox);
+                        const leftBox = document.getElementById("left-box") || document.getElementById("neo-sidebar");
+                        if (leftBox) {
+                            const resizeObserver = new ResizeObserver(() => { chinaMap.resize(); });
+                            resizeObserver.observe(leftBox);
+                        }
                         window.addEventListener("resize", function () { chinaMap.resize(); });
                         chinaMap.setOption({
                             tooltip: {
@@ -177,10 +99,19 @@
                 </script>
 
             </div>
-
-            <div class="handler"> </div>
+            <div class="neo-footer"><p>© 2026 Buttonwood · 足迹遍布世界</p></div>
         </div>
     </div>
+    <link rel="stylesheet" href="css/neo.css">
+    <script src="js/neo.js"></script>
+    <script>
+    fetch('neo-leftbox.html').then(r=>r.text()).then(d=>{
+        document.getElementById('neo-sidebar').innerHTML = d;
+        document.querySelectorAll('.neo-nav li[data-page]').forEach(li=>{
+            if(li.dataset.page==='photoIdea') li.classList.add('active');
+        });
+    });
+    </script>
 </body>
 
 </html>

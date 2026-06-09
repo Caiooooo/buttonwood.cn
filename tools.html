@@ -113,98 +113,18 @@
     </style>
 </head>
 
-<body onload="loaduser()" id="home">
-    <div class="container">
-        <!-- 在页面中加入一个容器 -->
-        <div class="left-box" id="left-box"></div>
-        <script>
-            // 检测是否为移动设备
-            function isMobileDevice() {
-                return window.innerWidth / window.innerHeight < 1.2;
-            }
+<body class="neo">
+    <div class="neo-container">
+        <div class="neo-sidebar" id="neo-sidebar"></div>
+        <div class="neo-overlay" id="neo-overlay"></div>
+        <div class="neo-menu-btn" id="neo-menu-btn"><span></span><span></span><span></span></div>
 
-            // 设置左侧栏宽度
-            function setLeftBoxWidth() {
-                const leftBox = document.getElementById('left-box');
-                const handler = document.querySelector('.handler');
-                const containerWidth = document.querySelector('.container').offsetWidth;
-                const menuButton = document.getElementById('menu-button');
-
-                if (isMobileDevice()) {
-                    leftBox.style.width = '0';
-                    handler.style.left = "5px";
-                    handler.classList.add('close');
-                    menuButton.style.display = 'block';
-                } else {
-                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
-                    leftBox.style.width = sidebarWidth + 'px';
-                    handler.style.left = (sidebarWidth + 5) + "px";
-                    handler.classList.remove('close');
-                    menuButton.style.display = 'none';
-                }
-            }
-
-            // 使用 JavaScript 动态加载 left-box.html
-            fetch('leftbox.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('left-box').innerHTML = data;
-                    const items = document.querySelectorAll('.item');
-                    // 找到实用工具项并高亮
-                    items.forEach((item, index) => {
-                        if (item.textContent.includes('实用工具')) {
-                            item.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                        }
-                    });
-
-                    setLeftBoxWidth();
-                    window.addEventListener('resize', setLeftBoxWidth);
-
-                    const menuButton = document.getElementById('menu-button');
-                    const leftBox = document.getElementById('left-box');
-                    const handler = document.querySelector('.handler');
-
-                    menuButton.addEventListener('click', function () {
-                        this.classList.toggle('active');
-                        if (leftBox.style.width === '0px') {
-                            leftBox.style.width = '210px';
-                            handler.style.left = "215px";
-                            handler.classList.remove('close');
-                        } else {
-                            leftBox.style.width = '0';
-                            handler.style.left = "5px";
-                            handler.classList.add('close');
-                        }
-                    });
-                })
-                .catch(error => console.error('Error loading left-box.html:', error));
-        </script>
-
-        <div class="right-box">
-            <div class="right-top">
-                <div class="menu-button" id="menu-button">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <i class="icon-art"></i>
-                <span>实用工具</span>
-                <span class="right-top-span-2">免费在线工具集合</span>
-                <p><br></p>
+        <div class="neo-main">
+            <div class="neo-page-header" style="padding:20px 20px 0;">
+                <h1 class="neo-reveal neo-reveal-d1" style="font-size:26px;margin:0;">实用工具</h1>
             </div>
 
-            <div class="bg"></div>
-
-            <!-- 顶部广告位 -->
-            <div class="ad-container-top">
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9340624494211701"
-                    data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-
-            <div class="cardList">
+            <div class="neo-tool-grid" id="toolCards" style="padding-top:12px;">
                 <a href="tools/evm-keygen.html" class="card-default">
                     <div class="tool-card">
                         <div class="tool-card-content">
@@ -265,10 +185,80 @@
                     </div>
                 </a>
 
+                <a href="tools/video-compress.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🎬</div>
+                            <div class="tool-name">视频压缩</div>
+                            <div class="tool-des">浏览器端视频压缩，调整分辨率/质量/帧率，Canvas重编码导出WebM</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/uuid-gen.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🎲</div>
+                            <div class="tool-name">UUID生成器</div>
+                            <div class="tool-des">一键生成UUID v4，支持批量生成和复制</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/color-convert.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🎨</div>
+                            <div class="tool-name">颜色转换</div>
+                            <div class="tool-des">HEX/RGB/HSL颜色空间互转，实时预览</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/url-encode.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🔗</div>
+                            <div class="tool-name">URL编解码</div>
+                            <div class="tool-des">URL编码/解码工具，支持多种字符集</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/snake.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🐍</div>
+                            <div class="tool-name">贪吃蛇</div>
+                            <div class="tool-des">经典贪吃蛇游戏 · 方向键/WASD控制</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/2048.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🔢</div>
+                            <div class="tool-name">2048</div>
+                            <div class="tool-des">数字合并 puzzle · 方向键移动，凑出2048</div>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="tools/memory.html" class="card-default">
+                    <div class="tool-card">
+                        <div class="tool-card-content">
+                            <div class="tool-icon">🧠</div>
+                            <div class="tool-name">翻牌记忆</div>
+                            <div class="tool-des">记忆配对游戏 · 找到所有相同的emoji</div>
+                        </div>
+                    </div>
+                </a>
+
             </div>
 
             <!-- 中间广告位 -->
-            <div class="ad-container">
+            <div class="ad-container" style="text-align:center;max-width:728px;margin:30px auto;position:relative;z-index:2;">
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-9340624494211701"
                     data-ad-slot="1234567891" data-ad-format="auto" data-full-width-responsive="true"></ins>
                 <script>
@@ -276,10 +266,28 @@
                 </script>
             </div>
 
-            <div class="handler"></div>
+            <div class="neo-footer"><p>© 2026 Buttonwood · 更多工具即将上线</p></div>
         </div>
     </div>
+    <link rel="stylesheet" href="css/neo.css">
+    <script src="js/neo.js"></script>
     <script src="js/reg.js"></script>
+    <script>
+    fetch('neo-leftbox.html').then(r=>r.text()).then(d=>{
+        document.getElementById('neo-sidebar').innerHTML = d;
+        document.querySelectorAll('.neo-nav li[data-page]').forEach(li=>{
+            if(li.dataset.page==='tools') li.classList.add('active');
+        });
+    });
+    setTimeout(()=>{
+        document.querySelectorAll('#toolCards .card-default').forEach((a,i)=>{
+            a.classList.add('neo-tool-card','neo-reveal','neo-reveal-d'+(i%4+1));
+            const tc=a.querySelector('.tool-card');
+            if(tc){while(tc.firstChild){a.insertBefore(tc.firstChild,tc);}tc.remove();}
+        });
+        setTimeout(()=>document.querySelectorAll('#toolCards .neo-tool-card').forEach(el=>el.classList.add('visible')),200);
+    },200);
+    </script>
 </body>
 
 </html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL编解码 | Buttonwood工具集</title>
+    <link rel="shortcut icon" href="../img/logo.png">
+    <style>
+        :root{--bg:#0a0a14;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--cyan:#00e5ff;--text:#e0e0e0;--dim:rgba(255,255,255,0.5)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+        .container{max-width:800px;width:100%}
+        .back{color:var(--dim);text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:6px;margin-bottom:24px;transition:color .3s}
+        .back:hover{color:var(--cyan)}
+        h1{font-size:28px;font-weight:800;margin-bottom:8px}
+        .subtitle{color:var(--dim);font-size:14px;margin-bottom:32px}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+        .card h3{font-size:15px;margin-bottom:12px;color:var(--cyan)}
+        textarea{width:100%;min-height:120px;background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:14px;font-size:14px;font-family:monospace;resize:vertical;line-height:1.6}
+        textarea:focus{outline:none;border-color:var(--cyan)}
+        .btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+        .btn{padding:10px 24px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .3s}
+        .btn-primary{background:var(--cyan);color:#000}
+        .btn-primary:hover{box-shadow:0 4px 20px rgba(0,229,255,.3);transform:translateY(-1px)}
+        .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+        .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+        .result{font-family:monospace;font-size:13px;word-break:break-all;background:rgba(0,0,0,0.2);padding:14px;border-radius:10px;margin-top:12px;min-height:40px;color:var(--dim)}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../tools.html" class="back">← 返回工具列表</a>
+        <h1>🔗 URL编解码</h1>
+        <p class="subtitle">URL编码 (encodeURIComponent) 与解码，支持中文和特殊字符</p>
+
+        <div class="card">
+            <h3>📝 原始文本</h3>
+            <textarea id="inputText" placeholder="输入需要编码或解码的文本...">https://buttonwood.cn?q=你好世界&lang=zh</textarea>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="doEncode()">🔒 URL编码</button>
+                <button class="btn btn-ghost" onclick="doDecode()">🔓 URL解码</button>
+                <button class="btn btn-ghost" onclick="copyResult()">📋 复制结果</button>
+                <button class="btn btn-ghost" onclick="swapText()">🔄 交换</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📤 结果</h3>
+            <div class="result" id="resultText">点击上方按钮开始...</div>
+        </div>
+    </div>
+
+    <script>
+    const input=document.getElementById('inputText');
+    const result=document.getElementById('resultText');
+
+    function doEncode(){
+        try{result.textContent=encodeURIComponent(input.value)}catch(e){result.textContent='编码失败: '+e.message}
+    }
+    function doDecode(){
+        try{result.textContent=decodeURIComponent(input.value)}catch(e){result.textContent='解码失败: '+e.message}
+    }
+    function copyResult(){
+        if(result.textContent==='点击上方按钮开始...')return;
+        navigator.clipboard.writeText(result.textContent).then(()=>{
+            const t=result.textContent;result.textContent='已复制!';result.style.color='#69f0ae';
+            setTimeout(()=>{result.textContent=t;result.style.color=''},1200);
+        });
+    }
+    function swapText(){
+        const tmp=input.value;input.value=result.textContent;result.textContent=tmp;
+    }
+    </script>
+</body>
+</html>

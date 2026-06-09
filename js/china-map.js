@@ -1,13 +1,15 @@
 
 var chinaMap = echarts.init(document.getElementById("china-map"));
 window.onresize = chinaMap.resize; // 窗口或框架被调整大小时执行chinaMap.resize
-const leftBox = document.getElementById("left-box");
+const leftBox = document.getElementById("left-box") || document.getElementById("neo-sidebar");
 
 // 监听 leftBox 宽度变化
-const resizeObserver = new ResizeObserver(() => {
-    chinaMap.resize();
-});
-resizeObserver.observe(leftBox);
+if (leftBox) {
+    const resizeObserver = new ResizeObserver(() => {
+        chinaMap.resize();
+    });
+    resizeObserver.observe(leftBox);
+}
 window.addEventListener("resize", function () {
     chinaMap.resize();
 });

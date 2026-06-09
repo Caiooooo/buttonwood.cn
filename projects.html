@@ -11,141 +11,92 @@
     <meta name="google-adsense-account" content="ca-pub-9340624494211701">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701" crossorigin="anonymous"></script>
 </head>
-<body onload="loaduser()" id="home">
-    <div class="container">
-        <!-- 移动端菜单按钮 -->
-        
-        <!-- 在页面中加入一个容器 -->
-        <div class="left-box" id="left-box"></div>
-        <script>
-            // 检测是否为移动设备
-            function isMobileDevice() {
-                return window.innerWidth / window.innerHeight < 1.2; // 使用宽高比来判断，小于1.2认为是移动设备
-            }
+<body class="neo">
+    <div class="neo-container">
+        <div class="neo-sidebar" id="neo-sidebar"></div>
+        <div class="neo-overlay" id="neo-overlay"></div>
+        <div class="neo-menu-btn" id="neo-menu-btn"><span></span><span></span><span></span></div>
 
-            // 设置左侧栏宽度
-            function setLeftBoxWidth() {
-                const leftBox = document.getElementById('left-box');
-                const handler = document.querySelector('.handler');
-                const containerWidth = document.querySelector('.container').offsetWidth;
-                const menuButton = document.getElementById('menu-button');
-                
-                if (isMobileDevice()) {
-                    leftBox.style.width = '0';
-                    handler.style.left = "5px";
-                    handler.classList.add('close');
-                    menuButton.style.display = 'block';
-                    document.querySelector(".right-top-span-2").style.display = 'none';
-                } else {
-                    // 使用容器宽度的20%作为侧边栏宽度，最小210px
-                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
-                    leftBox.style.width = sidebarWidth + 'px';
-                    handler.style.left = (sidebarWidth + 5) + "px";
-                    handler.classList.remove('close');
-                    menuButton.style.display = 'none';
-                }
-            }
-
-            // 使用 JavaScript 动态加载 left-box.html
-            fetch('leftbox.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('left-box').innerHTML = data;
-                    const items = document.querySelectorAll('.item');
-                    items[2].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                    
-                    // 初始设置宽度
-                    setLeftBoxWidth();
-
-                    // 监听窗口大小变化
-                    window.addEventListener('resize', setLeftBoxWidth);
-
-                    // 添加菜单按钮点击事件
-                    const menuButton = document.getElementById('menu-button');
-                    const leftBox = document.getElementById('left-box');
-                    const handler = document.querySelector('.handler');
-                    
-                    menuButton.addEventListener('click', function() {
-                        this.classList.toggle('active');
-                        if (leftBox.style.width === '0px') {
-                            leftBox.style.width = '210px';
-                            handler.style.left = "215px";
-                            handler.classList.remove('close');
-                        } else {
-                            leftBox.style.width = '0';
-                            handler.style.left = "5px";
-                            handler.classList.add('close');
-                        }
-                    });
-                })
-                .catch(error => console.error('Error loading left-box.html:', error));
-        </script>
-
-
-        <div class="right-box">
-            <div class="right-top">
-                
-                <div class="menu-button" id="menu-button">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <i class="icon-art"></i>
-                <span>个人项目</span>
-                <span class="right-top-span-2">欢迎积极学习交流</span>
-                <p><br></p>
+        <div class="neo-main">
+            <div class="neo-page-header">
+                <div class="section-label neo-reveal">✦ Portfolio</div>
+                <h1 class="neo-reveal neo-reveal-d1">个人项目</h1>
+                <p class="neo-reveal neo-reveal-d2">开源作品集 · 欢迎交流与Star</p>
+                <div class="neo-section-line neo-reveal neo-reveal-d2"></div>
             </div>
-            <div class="cardList" >
-                <a href="index.html"  class="card-default">
-                <div class="card">
-                        <div>
-                            <div class="bg-img round card-icon" style="background-image:url(img/icon/webicon/wechat.jpg);width:32px;height:32px;" data-v-31f669e0></div><!---->
-                            <div class="card-main">
-                                <div class="card-name">音视频通话<!----></div>
-                                <div style="width:100%;"><div class="card-des">包含聊天大厅和音视频通话功能</div></div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <a href="http://buttonwood.cn:8887"  class="card-default">
-                    <div class="card">
-                        <div>
-                            <div class="bg-img round card-icon" style="background-image:url(img/logoC+.png);width:32px;height:32px;" data-v-31f669e0></div><!---->
-                            <div class="card-main">
-                                <div class="card-name">超智视图<!----></div>
-                                <div style="width:100%;"><div class="card-des">基于YOLOv5的乳腺早筛系统</div></div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <a href="https://github.com/Caiooooo/zilean"  class="card-default">
-                    <div class="card">
-                        <div>
-                            <div class="bg-img round card-icon" style="background-image:url(img/rust.svg);width:32px;height:32px;" data-v-31f669e0></div><!---->
-                            <div class="card-main">
-                                <div class="card-name">Zilean<!----></div>
-                                <div style="width:100%;"><div class="card-des">量化高频rust回测引擎</div></div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                <a href="./jupyter" target="_blank" class="card-default">
-                <div class="card">
-                        <div>
-                            <div class="bg-img round card-icon" style="background-image:url(img/icon/webicon/jupyter.jpg);width:32px;height:32px;" data-v-31f669e0></div><!---->
-                            <div class="card-main">
-                                <div class="card-name">jupyter lab<!----></div>
-                                <div style="width:100%;"><div class="card-des">个人python开发环境</div></div></div>
-                        </div>
-                    </div>
-                </a>
 
+            <div class="neo-card-grid">
+                <a href="https://github.com/Caiooooo/zilean" target="_blank" class="neo-card neo-reveal neo-reveal-d1">
+                    <div class="neo-card-icon" style="background-image:url(img/rust.svg)"></div>
+                    <div class="neo-card-info">
+                        <h3>Zilean ⭐12</h3>
+                        <p>高性能Tick级别HFT回测引擎，支持订单簿重建与策略模拟 · Rust</p>
+                    </div>
+                </a>
+                <a href="https://github.com/Caiooooo/polymarket-l2-collector" target="_blank" class="neo-card neo-reveal neo-reveal-d1">
+                    <div class="neo-card-icon" style="background-image:url(img/python.svg)"></div>
+                    <div class="neo-card-info">
+                        <h3>Polymarket L2 Collector ⭐1</h3>
+                        <p>Polymarket高频L2订单簿采集器，WebSocket实时订阅+量化回测 · Python</p>
+                    </div>
+                </a>
+                <a href="https://github.com/Caiooooo/Coloring-for-line-drawings" target="_blank" class="neo-card neo-reveal neo-reveal-d2">
+                    <div class="neo-card-icon" style="background-image:url(img/jupyter.svg)"></div>
+                    <div class="neo-card-info">
+                        <h3>线稿自动上色 ⭐3</h3>
+                        <p>基于深度学习的线稿自动上色，NY团队合作项目 · ML/CV</p>
+                    </div>
+                </a>
+                <a href="https://github.com/Caiooooo/YOLOv5-BUSI" target="_blank" class="neo-card neo-reveal neo-reveal-d2">
+                    <div class="neo-card-icon" style="background-image:url(img/python.svg)"></div>
+                    <div class="neo-card-info">
+                        <h3>YOLOv5-BUSI ⭐2</h3>
+                        <p>乳腺超声图像YOLOv5目标检测，含Web推理服务 · Python</p>
+                    </div>
+                </a>
+                <a href="https://github.com/Caiooooo/69Moives" target="_blank" class="neo-card neo-reveal neo-reveal-d3">
+                    <div class="neo-card-icon" style="background-image:url(img/java.svg)"></div>
+                    <div class="neo-card-info">
+                        <h3>69Moives ⭐2</h3>
+                        <p>Spring Boot电影网站全栈项目，含报表与数据库设计 · Java</p>
+                    </div>
+                </a>
+                <a href="https://github.com/Caiooooo/android-beat" target="_blank" class="neo-card neo-reveal neo-reveal-d3">
+                    <div class="neo-card-icon" style="background-image:url(img/android.svg)"></div>
+                    <div class="neo-card-info">
+                        <h3>android-beat ⭐2</h3>
+                        <p>Android节拍器，涵盖四大组件、传感器、ContentProvider · Java</p>
+                    </div>
+                </a>
+                <a href="https://github.com/Caiooooo/adaptiveHuffmanTree" target="_blank" class="neo-card neo-reveal neo-reveal-d4">
+                    <div class="neo-card-icon" style="background:#dea584;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:700;">C++</div>
+                    <div class="neo-card-info">
+                        <h3>Adaptive Huffman Tree ⭐1</h3>
+                        <p>自适应哈夫曼树压缩工具，含完整编解码实现 · C++</p>
+                    </div>
+                </a>
+                <a href="https://github.com/Caiooooo/bt_cvd" target="_blank" class="neo-card neo-reveal neo-reveal-d4">
+                    <div class="neo-card-icon" style="background:#4b9fd6;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700;">Py</div>
+                    <div class="neo-card-info">
+                        <h3>BT CVD</h3>
+                        <p>比特币CVD（累计成交量差）分析工具 · Python</p>
+                    </div>
+                </a>
             </div>
-            <div class="handler"> </div>
+
+            <div class="neo-footer"><p>© 2026 Buttonwood · More on <a href="https://github.com/Caiooooo" style="color:var(--cyan)">GitHub</a></p></div>
         </div>
-
-
     </div>
-    <script src="js/reg.js"></script>
+
+    <link rel="stylesheet" href="css/neo.css">
+    <script src="js/neo.js"></script>
+    <script>
+    // Load sidebar
+    fetch('neo-leftbox.html').then(r=>r.text()).then(d=>{
+        document.getElementById('neo-sidebar').innerHTML = d;
+        const items = document.querySelectorAll('.neo-nav li[data-page]');
+        items.forEach(li => { if (li.dataset.page === 'projects') li.classList.add('active'); });
+    });
+    </script>
 </body>
 </html>

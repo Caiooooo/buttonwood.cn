@@ -12,86 +12,20 @@
     <meta name="google-adsense-account" content="ca-pub-9340624494211701">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9340624494211701" crossorigin="anonymous"></script>
 </head>
-<body onload="loaduser()" id="home">
-    <div class="container">
+<body class="neo">
+    <div class="neo-container">
+        <div class="neo-sidebar" id="neo-sidebar"></div>
+        <div class="neo-overlay" id="neo-overlay"></div>
+        <div class="neo-menu-btn" id="neo-menu-btn"><span></span><span></span><span></span></div>
 
-        <div class="left-box" id="left-box"></div>
-        <script>
-            // 检测是否为移动设备
-            function isMobileDevice() {
-                return window.innerWidth / window.innerHeight < 1.2; // 使用宽高比来判断，小于1.2认为是移动设备
-            }
-
-            // 设置左侧栏宽度
-            function setLeftBoxWidth() {
-                const leftBox = document.getElementById('left-box');
-                const handler = document.querySelector('.handler');
-                const containerWidth = document.querySelector('.container').offsetWidth;
-                const menuButton = document.getElementById('menu-button');
-                
-                if (isMobileDevice()) {
-                    leftBox.style.width = '0';
-                    handler.style.left = "5px";
-                    handler.classList.add('close');
-                    menuButton.style.display = 'block';
-                    document.querySelector(".right-top-span-2").style.display = 'none';
-                } else {
-                    // 使用容器宽度的20%作为侧边栏宽度，最小210px
-                    const sidebarWidth = Math.max(containerWidth * 0.02, 210);
-                    leftBox.style.width = sidebarWidth + 'px';
-                    handler.style.left = (sidebarWidth + 5) + "px";
-                    handler.classList.remove('close');
-                    menuButton.style.display = 'none';
-                }
-            }
-
-            // 使用 JavaScript 动态加载 left-box.html
-            fetch('leftbox.html')
-                .then(response => response.text())
-                .then(data => {
-                    // 初始设置宽度
-                    setLeftBoxWidth();
-                    
-                    // 监听窗口大小变化
-                    window.addEventListener('resize', setLeftBoxWidth);
-
-                    document.getElementById('left-box').innerHTML = data;
-                    const items = document.querySelectorAll('.item');
-                    items[1].style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                    const menuButton = document.getElementById('menu-button');
-                    const leftBox = document.getElementById('left-box');
-                    const handler = document.querySelector('.handler');
-                    menuButton.addEventListener('click', function() {
-                        this.classList.toggle('active');
-                        if (leftBox.style.width === '0px') {
-                            leftBox.style.width = '210px';
-                            handler.style.left = "215px";
-                            handler.classList.remove('close');
-                        } else {
-                            leftBox.style.width = '0';
-                            handler.style.left = "5px";
-                            handler.classList.add('close');
-                        }
-                    });
-                })
-                .catch(error => console.error('Error loading left-box.html:', error));
-        </script>
-
-        <div class="right-box">
-            <div class="right-top">
-                <!-- 移动端菜单按钮 -->
-                <div class="menu-button" id="menu-button">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                
-                <i class="icon-design"></i>
-                <span>设计灵感</span>
-                <span class="right-top-span-2">来自全球的设计师</span>
-                <p><br></p>
+        <div class="neo-main">
+            <div class="neo-page-header">
+                <div class="section-label neo-reveal">◈ Inspiration</div>
+                <h1 class="neo-reveal neo-reveal-d1">设计灵感</h1>
+                <p class="neo-reveal neo-reveal-d2">来自全球优秀设计师的灵感源泉</p>
+                <div class="neo-section-line neo-reveal neo-reveal-d2"></div>
             </div>
-            <div class="cardList" >
+            <div class="cardList neo-card-grid" id="designCards">
                 <a href="https://serennan.github.io/" target="_blank" class="card-default"><div class="card"><div><div class="bg-img round card-icon" style="background-image:url(./img/icon/webicon/avatar_hu_47dcc2efc37d0778.png);width:32px;height:32px;" data-v-31f669e0></div><!----><div class="card-main"><div class="card-name">serenNan个人博客</div><div style="width:100%;"><div class="card-des">挚友serennan的技术博客</div></div></div></div></div></a>
                 <a href="http://www.liuliygames.top/" target="_blank" class="card-default"><div class="card"><div><div class="bg-img round card-icon" style="background-image:url(./img/icon/webicon/liuli.png);width:32px;height:32px;" data-v-31f669e0></div><!----><div class="card-main"><div class="card-name">LiuliyGames</div><div style="width:100%;"><div class="card-des">游戏设计师Liuliy的技术博客</div></div></div></div></div></a>
                 <a href="https://yusjade.github.io/" target="_blank" class="card-default"><div class="card"><div><div class="bg-img round card-icon" style="background-image:url(./img/icon/webicon/serde_nan_friend.ico);width:32px;height:32px;" data-v-31f669e0></div><!----><div class="card-main"><div class="card-name">yusjade个人博客</div><div style="width:100%;"><div class="card-des">大佬YusJade的技术博客</div></div></div></div></div></a>
@@ -483,15 +417,37 @@
             <a class="card-default" href="http://www.pushthink.com/" target="_blank"><div class="card"><div><div class="bg-img round card-icon" data-v-31f669e0="" style="background-image:url(img/icon/webicon/9e4820bcc7e75978663161c52f393878.jpeg);width:32px;height:32px;"></div><!-- --><div class="card-main"><div class="card-name">普象网</div><div style="width:100%;"><div class="card-des">国内工业设计师交流展示平</div></div></div></div></div></a>
             <a class="card-default" href="https://www.artsthread.com/portfolios/" target="_blank"><div class="card"><div><div class="bg-img round card-icon" data-v-31f669e0="" style="background-image:url(img/icon/webicon/795db0e4b15b294a1bcdcaef102d5942.jpg);width:32px;height:32px;"></div><!-- --><div class="card-main"><div class="card-name">Arts Thread</div><div style="width:100%;"><div class="card-des">艺术设计创意作品集</div></div></div></div></div></a>
             <a class="card-default" href="https://www.skillshare.com/" target="_blank"><div class="card"><div><div class="bg-img round card-icon" data-v-31f669e0="" style="background-image:url(img/icon/webicon/8a57850d9266e7730c7243852679acfc.png);width:32px;height:32px;"></div><!-- --><div class="card-main"><div class="card-name">Skillshare</div><div style="width:100%;"><div class="card-des">在线技能学习社区</div></div></div></div></div></a>
-            
-
             </div>
 
-
-
-
-            <div class="handler"> </div>
+            <div class="neo-footer"><p>© 2026 Buttonwood · 全球设计灵感汇聚</p></div>
         </div>
     </div>
+    <link rel="stylesheet" href="css/neo.css">
+    <script src="js/neo.js"></script>
+    <script>
+    fetch('neo-leftbox.html').then(r=>r.text()).then(d=>{
+        document.getElementById('neo-sidebar').innerHTML = d;
+        document.querySelectorAll('.neo-nav li[data-page]').forEach(li=>{
+            if(li.dataset.page==='designIdea') li.classList.add('active');
+        });
+    });
+    setTimeout(()=>{
+        document.querySelectorAll('#designCards .card-default').forEach((a,i)=>{
+            a.classList.add('neo-card','neo-reveal','neo-reveal-d'+(i%4+1));
+            a.target='_blank';
+            const icon=a.querySelector('.card-icon');
+            const name=a.querySelector('.card-name');
+            const desc=a.querySelector('.card-des');
+            if(icon){icon.classList.add('neo-card-icon');icon.classList.remove('card-icon','bg-img','round');}
+            if(name){const h3=document.createElement('h3');h3.textContent=name.textContent.trim();name.replaceWith(h3);}
+            if(desc){const p=document.createElement('p');p.textContent=desc.textContent.trim();desc.parentElement.replaceWith(p);}
+            const main=a.querySelector('.card-main');
+            if(main){main.classList.add('neo-card-info');main.classList.remove('card-main');}
+            const card=a.querySelector('.card');
+            if(card){while(card.firstChild){a.insertBefore(card.firstChild,card);}card.remove();}
+        });
+        setTimeout(()=>document.querySelectorAll('#designCards .neo-card').forEach(el=>el.classList.add('visible')),300);
+    },200);
+    </script>
 </body>
 </html>

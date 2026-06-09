@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频压缩 - 浏览器端压缩 | Buttonwood工具集</title>
+    <link rel="shortcut icon" href="../img/logo.png">
+    <style>
+        :root{--bg:#0a0a14;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.08);--cyan:#00e5ff;--text:#e0e0e0;--dim:rgba(255,255,255,0.5);--green:#69f0ae}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+        .container{max-width:800px;width:100%}
+        .back{color:var(--dim);text-decoration:none;font-size:13px;display:inline-flex;align-items:center;gap:6px;margin-bottom:24px;transition:color .3s}
+        .back:hover{color:var(--cyan)}
+        h1{font-size:28px;font-weight:800;margin-bottom:8px}
+        .subtitle{color:var(--dim);font-size:14px;margin-bottom:32px}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+        .card h3{font-size:16px;margin-bottom:16px;color:var(--cyan)}
+        input[type=file]{display:block;width:100%;padding:12px;background:rgba(255,255,255,0.04);border:1px dashed var(--border);border-radius:10px;color:var(--text);cursor:pointer;margin-bottom:16px;font-size:14px}
+        input[type=file]:hover{border-color:var(--cyan)}
+        input[type=range]{width:100%;margin:12px 0;accent-color:var(--cyan)}
+        video{max-width:100%;border-radius:10px;margin:16px 0;display:none;max-height:360px}
+        .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+        .row label{font-size:12px;color:var(--dim);min-width:60px}
+        .row span{font-size:12px;color:var(--cyan);font-weight:600;min-width:40px}
+        .btn{padding:10px 24px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .3s;margin:4px}
+        .btn-primary{background:var(--cyan);color:#000}
+        .btn-primary:hover{box-shadow:0 4px 20px rgba(0,229,255,.3);transform:translateY(-1px)}
+        .btn-primary:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+        .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+        .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+        .btn-success{background:var(--green);color:#000}
+        .btn-success:hover{box-shadow:0 4px 20px rgba(105,240,174,.3)}
+        .info{font-size:12px;color:var(--dim);margin-top:8px}
+        .progress-bar{width:100%;height:4px;background:var(--border);border-radius:2px;margin:12px 0;overflow:hidden;display:none}
+        .progress-bar div{height:100%;background:var(--cyan);border-radius:2px;transition:width .3s;width:0%}
+        .result-link{display:none;margin-top:12px}
+        .result-link a{color:var(--cyan)}
+        .size-compare{display:flex;gap:24px;font-size:13px;color:var(--dim);margin-top:12px}
+        .size-compare b{color:#fff}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../tools.html" class="back">← 返回工具列表</a>
+        <h1>🎬 视频压缩</h1>
+        <p class="subtitle">浏览器端视频压缩 · Canvas重编码 · 隐私安全，不上传服务器</p>
+
+        <div class="card">
+            <h3>📤 选择视频</h3>
+            <input type="file" id="videoFile" accept="video/*">
+            <video id="videoPreview" controls loop></video>
+            <div class="info" id="videoInfo"></div>
+            <div class="size-compare" id="sizeCompare" style="display:none">
+                <span>原始: <b id="origSize">-</b></span>
+                <span>压缩后: <b id="newSize" style="color:var(--green)">-</b></span>
+            </div>
+        </div>
+
+        <div class="card" id="compressCard" style="display:none">
+            <h3>⚙️ 压缩设置</h3>
+            <div class="row">
+                <label>分辨率</label>
+                <input type="range" id="scaleSlider" min="30" max="100" value="100" oninput="updateScale()">
+                <span id="scaleVal">100% (原始)</span>
+            </div>
+            <div class="row">
+                <label>画质</label>
+                <input type="range" id="qualitySlider" min="30" max="100" value="85" oninput="updateQuality()">
+                <span id="qualityVal">85%</span>
+            </div>
+            <div class="row">
+                <label>帧率</label>
+                <input type="range" id="fpsSlider" min="10" max="30" value="30" oninput="updateFps()">
+                <span id="fpsVal">30 fps</span>
+            </div>
+            <div class="progress-bar" id="progressBar"><div id="progressFill"></div></div>
+            <button class="btn btn-primary" id="compressBtn" onclick="startCompress()">🔧 开始压缩</button>
+            <button class="btn btn-ghost" id="stopBtn" onclick="stopCompress()" style="display:none">⏹ 停止</button>
+            <div class="info" id="compressStatus"></div>
+            <div class="result-link" id="resultLink">
+                <button class="btn btn-success" onclick="downloadVideo()" id="downloadBtn">⬇ 下载压缩视频</button>
+                <button class="btn btn-ghost" onclick="convertToMP4()" id="mp4Btn" style="display:none">🔄 转为 MP4</button>
+            </div>
+            <p class="info" style="margin-top:14px;color:rgba(255,255,255,0.3);" id="formatNote"></p>
+        </div>
+    </div>
+
+    <script>
+    const videoFile=document.getElementById('videoFile');
+    const video=document.getElementById('videoPreview');
+    const videoInfo=document.getElementById('videoInfo');
+    const compressCard=document.getElementById('compressCard');
+    const compressBtn=document.getElementById('compressBtn');
+    const stopBtn=document.getElementById('stopBtn');
+    const progressBar=document.getElementById('progressBar');
+    const progressFill=document.getElementById('progressFill');
+    const compressStatus=document.getElementById('compressStatus');
+    const resultLink=document.getElementById('resultLink');
+    const downloadBtn=document.getElementById('downloadBtn');
+    const mp4Btn=document.getElementById('mp4Btn');
+    const formatNote=document.getElementById('formatNote');
+    const sizeCompare=document.getElementById('sizeCompare');
+    const origSize=document.getElementById('origSize');
+    const newSize=document.getElementById('newSize');
+
+    let mediaRecorder, chunks=[], canvas, ctx, stream, origBytes, finalBlob, finalExt;
+    let scale=1.0, quality=0.85, fps=30;
+
+    // Preferred mime types: MP4 first, then WebM
+    function getMimeType(){
+        const prefs=[
+            ['video/mp4;codecs=h264','mp4'],
+            ['video/mp4;codecs=avc1.42E01E','mp4'],
+            ['video/mp4;codecs=avc1','mp4'],
+            ['video/mp4','mp4'],
+            ['video/webm;codecs=vp9','webm'],
+            ['video/webm;codecs=vp8','webm'],
+            ['video/webm','webm'],
+        ];
+        for(const [mime,ext] of prefs){
+            if(MediaRecorder.isTypeSupported(mime)) return [mime,ext];
+        }
+        return ['video/webm','webm'];
+    }
+
+    videoFile.addEventListener('change',()=>{
+        const file=videoFile.files[0];
+        if(!file)return;
+        origBytes=file.size;
+        const url=URL.createObjectURL(file);
+        video.src=url;video.style.display='block';
+        videoInfo.textContent=`${file.name} · ${(file.size/1024/1024).toFixed(1)}MB`;
+        origSize.textContent=(file.size/1024/1024).toFixed(1)+'MB';
+        video.addEventListener('loadedmetadata',()=>{
+            videoInfo.textContent+=` · ${video.duration.toFixed(1)}s · ${video.videoWidth}x${video.videoHeight}`;
+            compressCard.style.display='block';
+            resetCompress();
+            updateScale();
+        },{once:true});
+    });
+
+    function updateScale(){scale=document.getElementById('scaleSlider').value/100;const v=video;document.getElementById('scaleVal').textContent=v.videoWidth?Math.round(scale*100)+'% ('+Math.round(v.videoWidth*scale)+'x'+Math.round(v.videoHeight*scale)+')':Math.round(scale*100)+'%';}
+    function updateQuality(){quality=document.getElementById('qualitySlider').value/100;document.getElementById('qualityVal').textContent=Math.round(quality*100)+'%';}
+    function updateFps(){fps=+document.getElementById('fpsSlider').value;document.getElementById('fpsVal').textContent=fps+' fps';}
+
+    function resetCompress(){
+        chunks=[];finalBlob=null;finalExt='';
+        progressFill.style.width='0%';compressStatus.textContent='';
+        resultLink.style.display='none';sizeCompare.style.display='none';
+        mp4Btn.style.display='none';formatNote.textContent='';
+        compressBtn.disabled=false;compressBtn.style.display='';stopBtn.style.display='none';
+        progressBar.style.display='none';
+    }
+
+    async function startCompress(){
+        if(!video.src||video.readyState<2){alert('请先选择视频');return}
+        resetCompress();
+        compressBtn.style.display='none';stopBtn.style.display='';
+        progressBar.style.display='block';
+        compressStatus.textContent='正在压缩...';
+
+        canvas=document.createElement('canvas');
+        const w=Math.round(video.videoWidth*scale),h=Math.round(video.videoHeight*scale);
+        canvas.width=w;canvas.height=h;
+        ctx=canvas.getContext('2d');
+
+        stream=canvas.captureStream(fps);
+        const audioStream=await tryGetAudio(video);
+        if(audioStream){
+            const audioTrack=audioStream.getAudioTracks()[0];
+            if(audioTrack)stream.addTrack(audioTrack);
+        }
+
+        const [mimeType,ext]=getMimeType();
+        finalExt=ext;
+        formatNote.textContent=ext==='mp4'?'✅ 输出格式：MP4 (H.264) — 主流播放器均可播放':'💡 输出格式：WebM — 可点击「转为 MP4」转换';
+        mediaRecorder=new MediaRecorder(stream,{mimeType,videoBitsPerSecond:Math.round(quality*12000000)});
+
+        mediaRecorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data)};
+        mediaRecorder.onstop=async ()=>{
+            // Flush and finalize so video is seekable
+            const blobType=finalExt==='mp4'?'video/mp4':'video/webm';
+            finalBlob=new Blob(chunks,{type:blobType});
+            // Fix duration by loading into temp video
+            try{
+                const dur=await getBlobDuration(finalBlob);
+                if(dur) finalBlob = await patchWebMDuration(finalBlob, dur);
+            }catch(e){}
+            newSize.textContent=(finalBlob.size/1024/1024).toFixed(1)+'MB';
+            sizeCompare.style.display='flex';
+            resultLink.style.display='block';
+            if(finalExt==='webm') mp4Btn.style.display='';
+            compressStatus.textContent='✅ 压缩完成！';
+            progressFill.style.width='100%';
+            compressBtn.style.display='';stopBtn.style.display='none';
+            compressBtn.disabled=false;
+        };
+
+        mediaRecorder.start(1000);
+        video.currentTime=0;video.play();
+
+        function drawFrame(){
+            if(mediaRecorder.state==='inactive')return;
+            ctx.drawImage(video,0,0,w,h);
+            const pct=Math.min(100,Math.round((video.currentTime/video.duration)*100));
+            progressFill.style.width=pct+'%';
+            compressStatus.textContent=`压缩中... ${pct}%`;
+            if(video.ended||video.currentTime>=video.duration-0.1){
+                mediaRecorder.stop();video.pause();return;
+            }
+            requestAnimationFrame(drawFrame);
+        }
+        video.addEventListener('playing',()=>{drawFrame()},{once:true});
+    }
+
+    async function tryGetAudio(videoEl){
+        try{
+            const audioCtx=new AudioContext();
+            const source=audioCtx.createMediaElementSource(videoEl);
+            const dest=audioCtx.createMediaStreamDestination();
+            source.connect(dest);source.connect(audioCtx.destination);
+            return dest.stream;
+        }catch(e){return null}
+    }
+
+    function stopCompress(){
+        if(mediaRecorder&&mediaRecorder.state==='recording')mediaRecorder.stop();
+        video.pause();
+    }
+
+    function downloadVideo(){
+        if(!finalBlob){alert('请先压缩视频');return}
+        const url=URL.createObjectURL(finalBlob);
+        const a=document.createElement('a');a.href=url;
+        const name=videoFile.files[0]?.name||'video';
+        a.download=name.replace(/\.[^.]+$/,'')+'_compressed.'+finalExt;a.click();
+    }
+
+    // Get true duration from blob via temp video
+    function getBlobDuration(blob){
+        return new Promise(resolve=>{
+            const v=document.createElement('video');
+            v.preload='metadata';v.muted=true;
+            v.src=URL.createObjectURL(blob);
+            v.addEventListener('loadedmetadata',()=>resolve(v.duration),{once:true});
+            v.addEventListener('error',()=>resolve(null),{once:true});
+        });
+    }
+
+    // Patch WebM blob Duration so video is seekable
+    async function patchWebMDuration(blob, duration){
+        if(finalExt==='mp4') return blob; // MP4 doesn't need this
+        if(!duration||duration<=0) return blob;
+        try{
+            const buf=await blob.arrayBuffer();
+            const bytes=new Uint8Array(buf);
+            // Duration is in Segment > Info > Duration (0x4489), a float64 in ms
+            // Find Segment Info (0x1549A966) then Duration inside it
+            const view=new DataView(bytes.buffer);
+            for(let i=0;i<bytes.length-20;i++){
+                // Look for Duration element ID: 0x4489
+                if(bytes[i]===0x44&&bytes[i+1]===0x89){
+                    const size=readEBMLSize(bytes,i+2);
+                    if(size&&size.s>=7&&size.s<=8){
+                        view.setFloat64(i+2+size.l,duration*1000,false);
+                        return new Blob([bytes],{type:'video/webm'});
+                    }
+                }
+            }
+        }catch(e){}
+        return blob;
+    }
+    function readEBMLSize(bytes,start){
+        let l=0,s=0;
+        for(let i=start;i<start+8&&i<bytes.length;i++){
+            s=(s<<7)|(bytes[i]&0x7F);
+            l++;
+            if(!(bytes[i]&0x80)) return {l,s:s>>(l-1)?s:s};
+        }
+        return null;
+    }
+
+    async function convertToMP4(){
+        if(!finalBlob||finalExt==='mp4'){alert('已是MP4格式');return}
+        mp4Btn.disabled=true;mp4Btn.textContent='转换中...';
+        formatNote.textContent='⏳ 正在将 WebM 转为 MP4...';
+
+        // Play WebM into temp video, render to canvas, re-record as MP4
+        const tmpVideo=document.createElement('video');
+        tmpVideo.src=URL.createObjectURL(finalBlob);
+        tmpVideo.muted=true;
+        await new Promise(r=>{tmpVideo.addEventListener('loadedmetadata',r,{once:true})});
+
+        const cv=document.createElement('canvas');
+        cv.width=tmpVideo.videoWidth;cv.height=tmpVideo.videoHeight;
+        const cx=cv.getContext('2d');
+        const st=cv.captureStream(30);
+
+        // Try MP4 mime types specifically for this re-encode
+        const mp4Mimes=[
+            ['video/mp4;codecs=h264','mp4'],
+            ['video/mp4;codecs=avc1.42E01E','mp4'],
+            ['video/mp4;codecs=avc1','mp4'],
+            ['video/mp4','mp4'],
+            ['video/webm;codecs=vp9','webm'],
+            ['video/webm','webm'],
+        ];
+        let mp4Mime='video/mp4',newExt='mp4';
+        for(const [m,e] of mp4Mimes){
+            if(MediaRecorder.isTypeSupported(m)){mp4Mime=m;newExt=e;break}
+        }
+
+        const rec=new MediaRecorder(st,{mimeType:mp4Mime,videoBitsPerSecond:Math.round(quality*12000000)});
+        const newChunks=[];
+        rec.ondataavailable=e=>{if(e.data.size>0)newChunks.push(e.data)};
+        rec.onstop=()=>{
+            const blob=new Blob(newChunks,{type:newExt==='mp4'?'video/mp4':'video/webm'});
+            finalBlob=blob;finalExt=newExt;
+            newSize.textContent=(blob.size/1024/1024).toFixed(1)+'MB';
+            formatNote.textContent=newExt==='mp4'?'✅ 已转为 MP4 (H.264) — 主流播放器均可播放':'⚠️ 该浏览器不支持MP4编码，已保持WebM格式';
+            mp4Btn.style.display='none';
+            mp4Btn.disabled=false;mp4Btn.textContent='🔄 转为 MP4';
+        };
+
+        rec.start(100);
+        tmpVideo.currentTime=0;tmpVideo.play();
+
+        function draw(){
+            if(rec.state==='inactive')return;
+            cx.drawImage(tmpVideo,0,0,cv.width,cv.height);
+            const pct=Math.min(100,Math.round((tmpVideo.currentTime/tmpVideo.duration)*100));
+            formatNote.textContent=`⏳ 转换中... ${pct}%`;
+            if(tmpVideo.ended||tmpVideo.currentTime>=tmpVideo.duration-0.1){
+                rec.stop();tmpVideo.pause();return;
+            }
+            requestAnimationFrame(draw);
+        }
+        tmpVideo.addEventListener('playing',()=>{draw()},{once:true});
+    }
+    </script>
+</body>
+</html>
